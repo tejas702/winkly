@@ -67,4 +67,8 @@ public class UserEntity implements Serializable {
     this.password = password;
   }
 
+  public UserEntity(String email) {
+    this.email = email;
+  }
+
 }
