@@ -58,7 +58,8 @@ public class SecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/winkly**", "/swagger-ui.html**",
-                        "/swagger-resources/**", "/v2/api-docs**", "/webjars/**", "/winkly/**").permitAll()
+                        "/swagger-resources/**", "/v2/api-docs**", "/webjars/**", "/winkly/**", "/winkly_session**",
+                        "/winkly_session/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

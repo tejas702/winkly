@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Table(
     name = "user_table",
@@ -50,6 +52,14 @@ public class UserEntity implements Serializable {
   @Size(max = 120)
   @Column(name = "password")
   private String password;
+
+  @Column(name = "resetToken")
+  @Nullable
+  private String resetToken;
+
+  @Column(name = "tokenCreationTime")
+  @Nullable
+  private LocalDateTime tokenCreationTime;
 
   public UserEntity(String username, String email, String password) {
     this.userName = username;

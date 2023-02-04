@@ -4,15 +4,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserResponseDto {
-    private Long id;
+public class ResetPasswordDto {
+    private String token;
+    private String password;
+    private String matchPassword;
     private String userName;
     private String email;
+    private LocalDateTime tokenCreationTime;
 }

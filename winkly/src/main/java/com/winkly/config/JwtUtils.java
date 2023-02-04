@@ -20,6 +20,9 @@ public class JwtUtils {
     @Value("${com.winkly.jwtSecret}")
     private String jwtSecret;
 
+    @Value("${com.winkly.jwtRefreshSecret}")
+    private String jwtRefreshSecret;
+
     @Value("${com.winkly.jwtExpirationMs}")
     private int jwtExpirationMs;
 
@@ -50,6 +53,10 @@ public class JwtUtils {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
+    public String getUserNameFromJwtRefreshToken(String token) {
+        return Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody().getSubject();
+    }
+
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
@@ -75,6 +82,15 @@ public class JwtUtils {
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
+    public String generateRefreshTokenFromUsername(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + (365 * 24 * 60 * 60)))
+                .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
                 .compact();
     }
 }

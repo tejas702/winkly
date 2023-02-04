@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserResponseDto {
-    private Long id;
-    private String userName;
+public class PasswordDto {
+    private String oldPassword;
+    private String token;
+    private String newPassword;
     private String email;
 }

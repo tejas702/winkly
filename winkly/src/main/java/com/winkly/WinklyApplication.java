@@ -15,7 +15,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableScheduling
 @ComponentScan(basePackages = {"com.winkly.*"})
 @EntityScan(basePackages = {"com.winkly"})
-@EnableJpaRepositories(basePackages = {"com.winkly.*"})
+@EnableJpaRepositories(basePackages = {"com.winkly*"})
 public class WinklyApplication {
 
 	public static void main(String[] args) {
