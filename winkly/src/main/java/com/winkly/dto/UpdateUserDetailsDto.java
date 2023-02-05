@@ -18,4 +18,5 @@ public class UpdateUserDetailsDto {
     private String linkedinLink;
     private String snapchatLink;
     private String twitterLink;
+    private String username;
 }

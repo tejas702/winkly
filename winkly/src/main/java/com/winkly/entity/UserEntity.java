@@ -12,14 +12,17 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(
     name = "user_table",
     indexes = {
       @Index(name = "table_symbol", columnList = "email", unique = true),
+      @Index(name = "table_username", columnList = "username", unique = true),
     },
     uniqueConstraints = {
-      @UniqueConstraint(columnNames = "email")
+      @UniqueConstraint(columnNames = "email"),
+      @UniqueConstraint(columnNames = "username")
     })
 @Entity
 @Data
@@ -40,6 +43,11 @@ public class UserEntity implements Serializable {
   @Email
   @Column(name = "email")
   private String email;
+
+  @NotBlank
+  @Size(max = 120)
+  @Column(name = "username")
+  private String username;
 
   @NotBlank
   @Size(max = 120)
@@ -77,6 +85,14 @@ public class UserEntity implements Serializable {
   @Column(name = "linktree_link")
   @Nullable
   private String linktreeLink;
+
+//  @ElementCollection
+//  @Column(name = "liked_you")
+//  private List<String> likedYou;
+//
+//  @ElementCollection
+//  @Column(name = "you_liked")
+//  private List<String> youLiked;
 
   public UserEntity(String email, String password) {
     this.email = email;
