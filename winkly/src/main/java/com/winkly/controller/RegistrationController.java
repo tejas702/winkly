@@ -55,17 +55,12 @@ public class RegistrationController {
     @PostMapping("/register_user")
     @ApiOperation("Register User")
     public ResponseEntity registerUser(@Valid @RequestBody UserRegisterRequestDto userRegisterRequestDto) {
-        if (userRepository.existsByUserName(userRegisterRequestDto.getUserName())) {
-            return ResponseEntity.badRequest().body(new MessageInfoDto("Error: Username is already taken!"));
-        }
-
         if (userRepository.existsByEmail(userRegisterRequestDto.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageInfoDto("Error: Email is already in use!"));
         }
 
         // Create new user's account
-        UserEntity user = new UserEntity(userRegisterRequestDto.getUserName(),
-                userRegisterRequestDto.getEmail(),
+        UserEntity user = new UserEntity(userRegisterRequestDto.getEmail(),
                 encoder.encode(userRegisterRequestDto.getPassword()));
 
         userRepository.save(user);
@@ -110,7 +105,7 @@ public class RegistrationController {
             return "message";
         } else {
             userRepository.updatePassword(
-                    encoder.encode(password), user.getUserName());
+                    encoder.encode(password), user.getEmail());
             model.addAttribute("message", "You have successfully changed your password.");
         }
 

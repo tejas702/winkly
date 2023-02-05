@@ -17,10 +17,8 @@ import java.time.LocalDateTime;
     name = "user_table",
     indexes = {
       @Index(name = "table_symbol", columnList = "email", unique = true),
-      @Index(name = "table_gsin", columnList = "userName", unique = true)
     },
     uniqueConstraints = {
-      @UniqueConstraint(columnNames = "userName"),
       @UniqueConstraint(columnNames = "email")
     })
 @Entity
@@ -36,11 +34,6 @@ public class UserEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
-
-  @NotBlank
-  @Size(max = 20)
-  @Column(name = "userName")
-  private String userName;
 
   @NotBlank
   @Size(max = 50)
@@ -85,8 +78,7 @@ public class UserEntity implements Serializable {
   @Nullable
   private String linktreeLink;
 
-  public UserEntity(String username, String email, String password) {
-    this.userName = username;
+  public UserEntity(String email, String password) {
     this.email = email;
     this.password = password;
   }

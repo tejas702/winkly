@@ -14,18 +14,15 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-
-    Optional<UserEntity> findByUserName(String username);
     Optional<UserEntity> findByEmail(String email);
-    Boolean existsByUserName(String username);
     Boolean existsByEmail(String email);
 
     @Query(
-            value = "UPDATE user_table SET password=:password WHERE user_name=:username",
+            value = "UPDATE user_table SET password=:password WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
-    void updatePassword(@Param("password") String password, @Param("username") String username);
+    void updatePassword(@Param("password") String password, @Param("email") String email);
 
 
     @Query(
