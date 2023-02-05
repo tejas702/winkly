@@ -1,9 +1,6 @@
 package com.winkly.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -29,6 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+
 public class UserEntity implements Serializable {
 
   private static final long serialVersionUID = -645834567897L;
@@ -48,6 +46,11 @@ public class UserEntity implements Serializable {
   @Size(max = 120)
   @Column(name = "username")
   private String username;
+
+  @NotBlank
+  @Size(max = 200)
+  @Column(name = "name")
+  private String name;
 
   @NotBlank
   @Size(max = 120)
@@ -86,13 +89,13 @@ public class UserEntity implements Serializable {
   @Nullable
   private String linktreeLink;
 
-//  @ElementCollection
-//  @Column(name = "liked_you")
-//  private List<String> likedYou;
-//
-//  @ElementCollection
-//  @Column(name = "you_liked")
-//  private List<String> youLiked;
+  @Column(name = "liked_you")
+  @ElementCollection
+  private List<String> likedYou;
+
+  @Column(name = "you_liked")
+  @ElementCollection
+  private List<String> youLiked;
 
   public UserEntity(String email, String password) {
     this.email = email;

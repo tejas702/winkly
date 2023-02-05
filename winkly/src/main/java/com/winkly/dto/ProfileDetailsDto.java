@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateUserDetailsDto {
+public class ProfileDetailsDto {
     private String fbLink;
     private String instaLink;
     private String linktreeLink;
@@ -19,5 +19,6 @@ public class UpdateUserDetailsDto {
     private String snapchatLink;
     private String twitterLink;
     private String username;
+    private String email;
     private String name;
 }

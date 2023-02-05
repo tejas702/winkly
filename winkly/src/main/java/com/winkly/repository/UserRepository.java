@@ -15,6 +15,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByEmail(String email);
+
+    UserEntity findByUsername(String username);
     Boolean existsByEmail(String email);
 
     Boolean existsByUsername(String username);
@@ -29,15 +31,17 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query(
             value = "UPDATE user_table SET fb_link=:fbLink, snapchat_link=:snapchatLink, twitter_link=:twitterLink," +
-                    "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink, username=:username " +
-                    "WHERE email=:email",
+                    "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink, username=:username, " +
+                    "name=:name WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
     void updateSocials(@Param("fbLink") String fbLink, @Param("twitterLink") String twitterLink, @Param("snapchatLink")
                        String snapchatLink, @Param("instaLink") String instaLink, @Param("linkedinLink") String
                        linkedinLink, @Param("linktreeLink") String linktreeLink, @Param("email") String email,
-                       @Param("username") String username);
+                       @Param("username") String username, @Param("name") String name);
 
     UserEntity findByResetToken(String token);
+
+
 }
