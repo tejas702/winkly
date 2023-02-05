@@ -81,7 +81,6 @@ public class UserDetailsController {
 
     @GetMapping("/get_profile")
     @ApiOperation("Get Profile Details")
-    @Transactional
     public ResponseEntity getProfile(@Valid @RequestParam String username) {
 
         if (userRepository.existsByUsername(username)) {
