@@ -32,14 +32,15 @@ public class UserDetailsController {
 
     @PutMapping("/update_socials")
     @ApiOperation("Update User Social Details")
-    public ResponseEntity updateUserDetails(@Valid @RequestBody UpdateUserDetailsDto updateUserDetailsDto, @RequestParam
-        String token) {
+    public ResponseEntity updateUserDetails(@Valid @RequestBody UpdateUserDetailsDto updateUserDetailsDto,
+                                            @RequestHeader("Authorization") String token) {
             String fbLink = updateUserDetailsDto.getFbLink();
             String instaLink = updateUserDetailsDto.getInstaLink();
             String linktreeLink = updateUserDetailsDto.getLinktreeLink();
             String linkedinLink = updateUserDetailsDto.getLinkedinLink();
             String snapchatLink = updateUserDetailsDto.getSnapchatLink();
             String twitterLink = updateUserDetailsDto.getTwitterLink();
+            token = token.replace("Bearer ", "");
             String email = jwtUtils.getEmailFromJwtToken(token);
             String username = updateUserDetailsDto.getUsername();
             if (!userRepository.existsByUsername(username))
