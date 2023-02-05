@@ -1,5 +1,6 @@
 package com.winkly.repository;
 
+import com.winkly.dto.UpdateUserDetailsDto;
 import com.winkly.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,6 +26,17 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Modifying
     @Transactional
     void updatePassword(@Param("password") String password, @Param("username") String username);
+
+
+    @Query(
+            value = "UPDATE user_table SET fb_link=:fbLink, snapchat_link=:snapchatLink, twitter_link=:twitterLink," +
+                    "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink WHERE email=:email",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateSocials(@Param("fbLink") String fbLink, @Param("twitterLink") String twitterLink, @Param("snapchatLink")
+                       String snapchatLink, @Param("instaLink") String instaLink, @Param("linkedinLink") String
+                       linkedinLink, @Param("linktreeLink") String linktreeLink, @Param("email") String email);
 
     UserEntity findByResetToken(String token);
 }

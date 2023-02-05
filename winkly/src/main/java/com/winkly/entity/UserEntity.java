@@ -61,6 +61,30 @@ public class UserEntity implements Serializable {
   @Nullable
   private LocalDateTime tokenCreationTime;
 
+  @Column(name = "fb_link")
+  @Nullable
+  private String fbLink;
+
+  @Column(name = "twitter_link")
+  @Nullable
+  private String twitterLink;
+
+  @Column(name = "insta_link")
+  @Nullable
+  private String instaLink;
+
+  @Column(name = "snapchat_link")
+  @Nullable
+  private String snapchatLink;
+
+  @Column(name = "linkedin_link")
+  @Nullable
+  private String linkedinLink;
+
+  @Column(name = "linktree_link")
+  @Nullable
+  private String linktreeLink;
+
   public UserEntity(String username, String email, String password) {
     this.userName = username;
     this.email = email;

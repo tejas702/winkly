@@ -43,7 +43,7 @@ public class LoginController {
     public ResponseEntity authenticateUser(@Valid @RequestBody UserLoginRequestDto loginRequest) {
 
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserName(), loginRequest.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -54,7 +54,7 @@ public class LoginController {
         log.info("Displaying JWT COOKIE: {}", jwtCookie);
 
         //log.info("{}",userDetails.getId());
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getUsername());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
         return ResponseEntity.ok().body(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), userDetails.getId(),
                 userDetails.getUsername(), userDetails.getEmail()));

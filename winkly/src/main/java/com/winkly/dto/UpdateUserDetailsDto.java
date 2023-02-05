@@ -11,7 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserLoginRequestDto {
-    private String email;
-    private String password;
+public class UpdateUserDetailsDto {
+    private String fbLink;
+    private String instaLink;
+    private String linktreeLink;
+    private String linkedinLink;
+    private String snapchatLink;
+    private String twitterLink;
 }

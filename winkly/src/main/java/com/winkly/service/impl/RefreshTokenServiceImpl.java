@@ -24,11 +24,11 @@ public class RefreshTokenServiceImpl {
     @Autowired
     private JwtUtils jwtUtils;
 
-    public RefreshToken createRefreshToken(String userName) {
+    public RefreshToken createRefreshToken(String email) {
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUserEntity(userRepository.findByUserName(userName).get());
+        refreshToken.setUserEntity(userRepository.findByEmail(email).get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-        refreshToken.setToken(jwtUtils.generateRefreshTokenFromUsername(userName));
+        refreshToken.setToken(jwtUtils.generateRefreshTokenFromEmail(email));
 
         return refreshToken;
     }
