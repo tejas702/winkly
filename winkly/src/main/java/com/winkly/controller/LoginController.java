@@ -3,6 +3,8 @@ package com.winkly.controller;
 import com.winkly.config.JwtUtils;
 import com.winkly.dto.*;
 import com.winkly.entity.RefreshToken;
+import com.winkly.entity.UserEntity;
+import com.winkly.repository.UserRepository;
 import com.winkly.service.impl.RefreshTokenServiceImpl;
 import com.winkly.service.impl.UserDetailsImpl;
 import com.winkly.utils.TokenRefreshException;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -39,6 +42,9 @@ public class LoginController {
     @Autowired
     private RefreshTokenServiceImpl refreshTokenService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @PostMapping("/log_in")
     public ResponseEntity authenticateUser(@Valid @RequestBody UserLoginRequestDto loginRequest) {
 
@@ -51,13 +57,16 @@ public class LoginController {
 
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
+        Optional<UserEntity> user = userRepository.findByEmail(userDetails.getEmail());
+        String username = user.get().getUsername();
+
         log.info("Displaying JWT COOKIE: {}", jwtCookie);
 
         //log.info("{}",userDetails.getId());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
         return ResponseEntity.ok().body(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), userDetails.getId(),
-                userDetails.getUsername(), userDetails.getEmail()));
+                username, userDetails.getEmail()));
     }
 
     @PostMapping("/refresh_token")
