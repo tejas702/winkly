@@ -75,9 +75,11 @@ public class UserDetailsController {
             attractedUser.get().getYouLiked().add(email);
         } else {
             liked = false;
+            user.getLikedYou().remove(attractedEmail);
+            attractedUser.get().getYouLiked().remove(email);
         }
 
-        return ResponseEntity.ok().body(attractedEmail + " " + liked + " " + email);
+        return ResponseEntity.ok().body(attractedEmail + " " + (liked ? "liked" : "disliked") + " " + email);
     }
 
     @GetMapping("/get_profile")
