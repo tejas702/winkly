@@ -66,17 +66,18 @@ public class UserDetailsController {
         token = token.replace("Bearer ", "");
         String attractedEmail = jwtUtils.getEmailFromJwtToken(token);
 
-        if (!user.getLikedYou().contains(attractedEmail)) {
-            user.getLikedYou().add(attractedEmail);
-        }
-
         Optional<UserEntity> attractedUser = userRepository.findByEmail(attractedEmail);
 
-        if (!attractedUser.get().getYouLiked().contains(email)) {
+        boolean liked = true;
+
+        if (!user.getLikedYou().contains(attractedEmail) && !attractedUser.get().getYouLiked().contains(email)) {
+            user.getLikedYou().add(attractedEmail);
             attractedUser.get().getYouLiked().add(email);
+        } else {
+            liked = false;
         }
 
-        return ResponseEntity.ok().body(attractedEmail + " liked " + email);
+        return ResponseEntity.ok().body(attractedEmail + " " + liked + " " + email);
     }
 
     @GetMapping("/get_profile")
