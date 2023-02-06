@@ -59,7 +59,7 @@ public class UserDetailsController {
     @PutMapping("/update_likes")
     @ApiOperation("Update Likes")
     @Transactional
-    public ResponseEntity<String> updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestParam String username) {
+    public ResponseEntity<String> updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody String username) {
         UserEntity user = userRepository.findByUsername(username);
         String email = user.getEmail();
 
@@ -84,16 +84,40 @@ public class UserDetailsController {
 
     @GetMapping("/get_profile")
     @ApiOperation("Get Profile Details")
-    public ResponseEntity getProfile(@Valid @RequestParam String username) {
+    @Transactional
+    public ResponseEntity getProfile(@Valid @RequestHeader(value = "Authorization", required = false) String token, @RequestParam String username) {
 
         if (userRepository.existsByUsername(username)) {
+            String email = "";
             UserEntity user = userRepository.findByUsername(username);
-            return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
-                    user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                    user.getUsername(), user.getEmail(), user.getName()));
+            Boolean likeStatus = null;
+            Optional<UserEntity> tokenUser;
+            try {
+                token = token.replace("Bearer ", "");
+                email = jwtUtils.getEmailFromJwtToken(token);
+                tokenUser = userRepository.findByEmail(email);
+                if (user.getEmail().equals(email)) {
+                    return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
+                            user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
+                            user.getUsername(), user.getEmail(), user.getName(), user.getLikedYou(), user.getYouLiked(),
+                            likeStatus));
+                }
+
+                likeStatus = tokenUser.get().getYouLiked().contains(user.getEmail());
+
+                return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
+                        user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
+                        user.getUsername(), user.getEmail(), user.getName(), likeStatus));
+
+            } catch (Exception e) {
+
+                return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
+                        user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
+                        user.getUsername(), user.getEmail(), user.getName(), likeStatus));
+            }
         }
-        else {
-            return ResponseEntity.badRequest().body("Username not found");
-        }
+
+        return ResponseEntity.badRequest().body("Username not found");
+
     }
 }

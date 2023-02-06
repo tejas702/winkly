@@ -1,6 +1,9 @@
 package com.winkly.entity;
 
+import com.winkly.dto.LikeDto;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -91,10 +94,12 @@ public class UserEntity implements Serializable {
 
   @Column(name = "liked_you")
   @ElementCollection
+  @LazyCollection(LazyCollectionOption.FALSE)
   private List<String> likedYou;
 
   @Column(name = "you_liked")
   @ElementCollection
+  @LazyCollection(LazyCollectionOption.FALSE)
   private List<String> youLiked;
 
   public UserEntity(String email, String password) {
