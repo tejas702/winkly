@@ -62,8 +62,9 @@ public class LoginController {
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
-        return ResponseEntity.ok().body(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), userDetails.getId(),
-                username, userDetails.getEmail()));
+        return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(),
+                refreshToken.getToken(), userDetails.getId(),
+                username, userDetails.getEmail()), "Login Successful!"));
     }
 
     @PostMapping("/refresh_token")

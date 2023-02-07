@@ -62,9 +62,7 @@ public class UserDetailsController {
     @ApiOperation("Update Likes")
     @Transactional
     public ResponseEntity updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
-        log.info("{}", username);
         UserEntity user = userRepository.findByUsername(username.getUsername());
-        log.info("{}", user.toString());
         String email = user.getEmail();
 
         token = token.replace("Bearer ", "");
@@ -83,7 +81,7 @@ public class UserDetailsController {
             attractedUser.get().getYouLiked().remove(email);
         }
 
-        return ResponseEntity.ok().body(new MessageInfoDto(attractedEmail + " " + (liked ? "liked" : "disliked") + " " + email));
+        return ResponseEntity.ok().body(attractedEmail + " " + (liked ? "liked" : "disliked") + " " + email);
     }
 
     @GetMapping("/get_profile")
@@ -96,18 +94,20 @@ public class UserDetailsController {
             UserEntity user = userRepository.findByUsername(username);
             Boolean likeStatus = null;
             Optional<UserEntity> tokenUser;
+            List<LikeListDto> likedYouUsernameList = new ArrayList<>();
+            List<LikeListDto> youLikedUsernameList = new ArrayList<>();
             try {
                 token = token.replace("Bearer ", "");
                 email = jwtUtils.getEmailFromJwtToken(token);
                 tokenUser = userRepository.findByEmail(email);
-                List<LikeListDto> likedYouUsernameList = new ArrayList<>();
+
+                log.info("{}", likedYouUsernameList.toString());
                 user.getLikedYou().forEach(
                                 (String element) -> {
                                         Optional<UserEntity> tempUser = userRepository.findByEmail(element);
                                         likedYouUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));                                }
                 );
 
-                List<LikeListDto> youLikedUsernameList = new ArrayList<>();
                 user.getYouLiked().forEach(
                         (String element) -> {
                             Optional<UserEntity> tempUser = userRepository.findByEmail(element);

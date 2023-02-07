@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,8 +24,8 @@ public class ProfileDetailsDto {
     private String username;
     private String email;
     private String name;
-    private List<LikeListDto> likedYouList;
-    private List<LikeListDto> youLikedList;
+    private List<LikeListDto> likedYouList = new ArrayList<>();
+    private List<LikeListDto> youLikedList = new ArrayList<>();
     private Boolean likeStatus;
     public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
                              String snapchatLink, String twitterLink, String username, String email, String name,
