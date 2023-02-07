@@ -17,9 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.sql.JDBCType.NULL;
 
 @RestController
 @RequestMapping(value = "/winkly_update")
@@ -47,12 +50,25 @@ public class UserDetailsController {
             String name = updateUserDetailsDto.getName();
             token = token.replace("Bearer ", "");
             String email = jwtUtils.getEmailFromJwtToken(token);
+            Optional<UserEntity> user = userRepository.findByEmail(email);
             String username = updateUserDetailsDto.getUsername();
+            String userName = user.get().getUsername();
             if (!userRepository.existsByUsername(username))
-            userRepository.updateSocials(fbLink, snapchatLink, twitterLink, instaLink, linkedinLink, linktreeLink,
+                if (userName == null)
+            userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
                     email, username, name);
+                else {
+                    return ResponseEntity.badRequest().body("Username already exists!");
+                }
             else {
-                return ResponseEntity.badRequest().body(new MessageInfoDto("Username already exists"));
+                //can update social links and name only
+                String emailTemp = userRepository.findByUsername(userName).getEmail();
+                if (emailTemp.equals(email))
+                userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
+                        linktreeLink, email, name);
+                else
+                    return ResponseEntity.badRequest().body("Username already exists!");
+                return ResponseEntity.ok().body(new MessageInfoDto("Details Updated"));
             }
 
             return ResponseEntity.ok().body(new MessageInfoDto("Socials Updated"));

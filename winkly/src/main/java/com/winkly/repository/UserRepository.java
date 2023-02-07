@@ -41,6 +41,18 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
                        linkedinLink, @Param("linktreeLink") String linktreeLink, @Param("email") String email,
                        @Param("username") String username, @Param("name") String name);
 
+    @Query(
+            value = "UPDATE user_table SET fb_link=:fbLink, snapchat_link=:snapchatLink, twitter_link=:twitterLink," +
+                    "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink, " +
+                    "name=:name WHERE email=:email",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateNameAndSocialOnly(@Param("fbLink") String fbLink, @Param("twitterLink") String twitterLink,
+                                 @Param("snapchatLink") String snapchatLink, @Param("instaLink") String instaLink,
+                                 @Param("linkedinLink") String linkedinLink, @Param("linktreeLink") String linktreeLink,
+                                 @Param("email") String email, @Param("name") String name);
+
     UserEntity findByResetToken(String token);
 
 
