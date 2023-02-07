@@ -23,8 +23,8 @@ public class ProfileDetailsDto {
     private String username;
     private String email;
     private String name;
-    private List<String> likedYouList;
-    private List<String> youLikedList;
+    private List<LikeListDto> likedYouList;
+    private List<LikeListDto> youLikedList;
     private Boolean likeStatus;
     public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
                              String snapchatLink, String twitterLink, String username, String email, String name,

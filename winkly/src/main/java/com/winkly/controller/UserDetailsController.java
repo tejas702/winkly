@@ -1,6 +1,7 @@
 package com.winkly.controller;
 
 import com.winkly.config.JwtUtils;
+import com.winkly.dto.LikeListDto;
 import com.winkly.dto.ProfileDetailsDto;
 import com.winkly.dto.UpdateUserDetailsDto;
 import com.winkly.entity.UserEntity;
@@ -10,13 +11,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -59,8 +60,10 @@ public class UserDetailsController {
     @PutMapping("/update_likes")
     @ApiOperation("Update Likes")
     @Transactional
-    public ResponseEntity<String> updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody String username) {
-        UserEntity user = userRepository.findByUsername(username);
+    public ResponseEntity<String> updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
+        log.info("{}", username);
+        UserEntity user = userRepository.findByUsername(username.getUsername());
+        log.info("{}", user.toString());
         String email = user.getEmail();
 
         token = token.replace("Bearer ", "");
@@ -96,10 +99,24 @@ public class UserDetailsController {
                 token = token.replace("Bearer ", "");
                 email = jwtUtils.getEmailFromJwtToken(token);
                 tokenUser = userRepository.findByEmail(email);
+                List<LikeListDto> likedYouUsernameList = new ArrayList<>();
+                user.getLikedYou().forEach(
+                                (String element) -> {
+                                        Optional<UserEntity> tempUser = userRepository.findByEmail(element);
+                                        likedYouUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));                                }
+                );
+
+                List<LikeListDto> youLikedUsernameList = new ArrayList<>();
+                user.getYouLiked().forEach(
+                        (String element) -> {
+                            Optional<UserEntity> tempUser = userRepository.findByEmail(element);
+                            youLikedUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));                                }
+                );
+
                 if (user.getEmail().equals(email)) {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                            user.getUsername(), user.getEmail(), user.getName(), user.getLikedYou(), user.getYouLiked(),
+                            user.getUsername(), user.getEmail(), user.getName(), likedYouUsernameList, youLikedUsernameList,
                             likeStatus));
                 }
 
