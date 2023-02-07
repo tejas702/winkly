@@ -28,6 +28,10 @@ public class UserDetailsImpl implements UserDetails {
         this.password = password;
     }
 
+    public UserDetailsImpl(String email) {
+        this.email = email;
+    }
+
     public static UserDetailsImpl build(UserEntity user) {
 
         return new UserDetailsImpl(

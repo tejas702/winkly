@@ -60,9 +60,6 @@ public class LoginController {
         Optional<UserEntity> user = userRepository.findByEmail(userDetails.getEmail());
         String username = user.get().getUsername();
 
-        log.info("Displaying JWT COOKIE: {}", jwtCookie);
-
-        //log.info("{}",userDetails.getId());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
         return ResponseEntity.ok().body(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), userDetails.getId(),

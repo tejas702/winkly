@@ -2,6 +2,7 @@ package com.winkly.controller;
 
 import com.winkly.config.JwtUtils;
 import com.winkly.dto.LikeListDto;
+import com.winkly.dto.MessageInfoDto;
 import com.winkly.dto.ProfileDetailsDto;
 import com.winkly.dto.UpdateUserDetailsDto;
 import com.winkly.entity.UserEntity;
@@ -51,16 +52,16 @@ public class UserDetailsController {
             userRepository.updateSocials(fbLink, snapchatLink, twitterLink, instaLink, linkedinLink, linktreeLink,
                     email, username, name);
             else {
-                return ResponseEntity.badRequest().body("Username already exists");
+                return ResponseEntity.badRequest().body(new MessageInfoDto("Username already exists"));
             }
 
-            return ResponseEntity.ok().body("Socials Updated");
+            return ResponseEntity.ok().body(new MessageInfoDto("Socials Updated"));
     }
 
     @PutMapping("/update_likes")
     @ApiOperation("Update Likes")
     @Transactional
-    public ResponseEntity<String> updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
+    public ResponseEntity updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
         log.info("{}", username);
         UserEntity user = userRepository.findByUsername(username.getUsername());
         log.info("{}", user.toString());
@@ -82,7 +83,7 @@ public class UserDetailsController {
             attractedUser.get().getYouLiked().remove(email);
         }
 
-        return ResponseEntity.ok().body(attractedEmail + " " + (liked ? "liked" : "disliked") + " " + email);
+        return ResponseEntity.ok().body(new MessageInfoDto(attractedEmail + " " + (liked ? "liked" : "disliked") + " " + email));
     }
 
     @GetMapping("/get_profile")
@@ -134,7 +135,7 @@ public class UserDetailsController {
             }
         }
 
-        return ResponseEntity.badRequest().body("Username not found");
+        return ResponseEntity.badRequest().body(new MessageInfoDto("Username not found"));
 
     }
 }
