@@ -62,6 +62,8 @@ public class UserDetailsController {
                 }
             else {
                 //can update social links and name only
+                if (userName == null)
+                    return ResponseEntity.badRequest().body("Username already exists!");
                 String emailTemp = userRepository.findByUsername(userName).getEmail();
                 if (emailTemp.equals(email))
                 userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
