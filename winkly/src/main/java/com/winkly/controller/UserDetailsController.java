@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,16 +72,31 @@ public class UserDetailsController {
         Optional<UserEntity> attractedUser = userRepository.findByEmail(attractedEmail);
 
         boolean liked = true;
+        boolean matched = false;
 
         if (!user.getLikedYou().contains(attractedEmail) && !attractedUser.get().getYouLiked().contains(email)) {
             user.getLikedYou().add(attractedEmail);
             attractedUser.get().getYouLiked().add(email);
+
+            if (user.getYouLiked().contains(attractedEmail) && attractedUser.get().getLikedYou().contains(email)) {
+                matched = true;
+                user.getMatched().add(attractedEmail);
+                attractedUser.get().getMatched().add(email);
+                return ResponseEntity.ok().body(new MessageInfoDto("It's a Match!"));
+            }
+
         } else {
             liked = false;
             user.getLikedYou().remove(attractedEmail);
             attractedUser.get().getYouLiked().remove(email);
-        }
 
+            try {
+                user.getMatched().remove(attractedEmail);
+                attractedUser.get().getMatched().remove(email);
+            } catch (Exception e) {
+                return ResponseEntity.ok().body("user not present in matched list");
+            }
+        }
         return ResponseEntity.ok().body(attractedEmail + " " + (liked ? "liked" : "disliked") + " " + email);
     }
 
@@ -96,29 +112,46 @@ public class UserDetailsController {
             Optional<UserEntity> tokenUser;
             List<LikeListDto> likedYouUsernameList = new ArrayList<>();
             List<LikeListDto> youLikedUsernameList = new ArrayList<>();
+            List<LikeListDto> matchedList = new ArrayList<>();
+
             try {
                 token = token.replace("Bearer ", "");
                 email = jwtUtils.getEmailFromJwtToken(token);
                 tokenUser = userRepository.findByEmail(email);
 
-                log.info("{}", likedYouUsernameList.toString());
+                HashSet<String> matchedSet = new HashSet<>();
+
+                user.getMatched().forEach(
+                        (String element) -> {
+                            Optional<UserEntity> tempUser = userRepository.findByEmail(element);
+                            matchedSet.add(tempUser.get().getEmail());
+                            matchedList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
+                        }
+                );
+
                 user.getLikedYou().forEach(
                                 (String element) -> {
-                                        Optional<UserEntity> tempUser = userRepository.findByEmail(element);
-                                        likedYouUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));                                }
+                                    Optional<UserEntity> tempUser = userRepository.findByEmail(element);
+                                    if (!matchedSet.contains(tempUser.get().getEmail())) {
+                                        likedYouUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
+                                    }
+                                }
                 );
 
                 user.getYouLiked().forEach(
                         (String element) -> {
                             Optional<UserEntity> tempUser = userRepository.findByEmail(element);
-                            youLikedUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));                                }
+                            if (!matchedSet.contains(tempUser.get().getEmail())) {
+                                youLikedUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
+                            }
+                        }
                 );
 
                 if (user.getEmail().equals(email)) {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                             user.getUsername(), user.getEmail(), user.getName(), likedYouUsernameList, youLikedUsernameList,
-                            likeStatus));
+                            matchedList, likeStatus));
                 }
 
                 likeStatus = tokenUser.get().getYouLiked().contains(user.getEmail());

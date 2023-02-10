@@ -26,6 +26,7 @@ public class ProfileDetailsDto {
     private String name;
     private List<LikeListDto> likedYouList = new ArrayList<>();
     private List<LikeListDto> youLikedList = new ArrayList<>();
+    private List<LikeListDto> matchedList = new ArrayList<>();
     private Boolean likeStatus;
     public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
                              String snapchatLink, String twitterLink, String username, String email, String name,

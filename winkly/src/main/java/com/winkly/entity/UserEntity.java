@@ -102,6 +102,11 @@ public class UserEntity implements Serializable {
   @LazyCollection(LazyCollectionOption.FALSE)
   private List<String> youLiked;
 
+  @Column(name = "matched")
+  @ElementCollection
+  @LazyCollection(LazyCollectionOption.FALSE)
+  private List<String> matched;
+
   public UserEntity(String email, String password) {
     this.email = email;
     this.password = password;
