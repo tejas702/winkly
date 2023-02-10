@@ -1,7 +1,11 @@
 package com.winkly.config;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.SingletonManager;
+import com.cloudinary.utils.ObjectUtils;
 import com.winkly.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +36,15 @@ public class SecurityConfig {
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
+
+    @Value("${cloudinary.config.cloud_name}")
+    private String cloudConfigName;
+
+    @Value("${cloudinary.config.api_key}")
+    private String cloudConfigApi;
+
+    @Value("${cloudinary.config.api_secret}")
+    private String cloudConfigKey;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -66,7 +79,7 @@ public class SecurityConfig {
                 .authorizeRequests().antMatchers("/winkly**", "/swagger-ui.html**",
                         "/swagger-resources/**", "/v2/api-docs**", "/webjars/**", "/winkly/**", "/winkly_session**",
                         "/winkly_session/**", "/winkly_google/**", "/winkly_google**", "/winkly_update**",
-                        "/winkly_update/**").permitAll()
+                        "/winkly_update/**", "/winkly_verify/**", "/winkly_verify**").permitAll()
                 .anyRequest().authenticated().and().oauth2Login();
 
         http.authenticationProvider(authenticationProvider());
@@ -87,5 +100,18 @@ public class SecurityConfig {
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
         return bean;
+    }
+
+    @Bean
+    public void CloudinaryBean() {
+        Cloudinary cloudinary =
+            new Cloudinary(
+                ObjectUtils.asMap(
+                    "cloud_name", cloudConfigName,
+                    "api_key", cloudConfigApi,
+                    "api_secret", cloudConfigKey));
+        SingletonManager manager = new SingletonManager();
+        manager.setCloudinary(cloudinary);
+        manager.init();
     }
 }
