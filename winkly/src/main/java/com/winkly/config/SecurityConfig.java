@@ -7,6 +7,7 @@ import com.winkly.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,16 +20,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
+
+import javax.servlet.MultipartConfigElement;
+import java.util.Arrays;
 
 @Configuration
 @EnableMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true)
-@CrossOrigin(allowedHeaders = {"*", "Content-Type", "token", "authorization"}, origins = "*", originPatterns = "*")
+@CrossOrigin(allowedHeaders = {"*", "Content-Type", "token", "authorization", "content-type", "accept", "Content type"}, origins = "*", originPatterns = "*")
 public class SecurityConfig {
 
     @Autowired
@@ -96,6 +103,7 @@ public class SecurityConfig {
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        config.setAllowedOrigins(Arrays.asList("*"));
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
@@ -113,5 +121,25 @@ public class SecurityConfig {
         SingletonManager manager = new SingletonManager();
         manager.setCloudinary(cloudinary);
         manager.init();
+    }
+
+    @Bean
+    public CommonsMultipartResolver multipartResolver() {
+        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+        multipartResolver.setMaxUploadSize(20971520);
+        return multipartResolver;
+    }
+
+    @Bean
+    public StandardServletMultipartResolver multipartResolver1() {
+        return new StandardServletMultipartResolver();
+    }
+
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(DataSize.ofBytes(20971520));
+        factory.setMaxRequestSize(DataSize.ofBytes(20971520));
+        return factory.createMultipartConfig();
     }
 }
