@@ -88,7 +88,7 @@ public class RegistrationController {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
         return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), userDetails.getId(),
-                userDetails.getUsername(), userDetails.getEmail()), "User Registered Successfully"));
+                userDetails.getUsername(), userDetails.getEmail()), "User Registered Successfully", user.getVerifiedStatus()));
     }
 
     @PostMapping("/forgot_password")

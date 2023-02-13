@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -126,6 +127,7 @@ public class UserDetailsController {
         if (userRepository.existsByUsername(username)) {
             String email = "";
             UserEntity user = userRepository.findByUsername(username);
+            Boolean verifiedStatus = user.getVerifiedStatus();
             Boolean likeStatus = null;
             Optional<UserEntity> tokenUser;
             List<LikeListDto> likedYouUsernameList = new ArrayList<>();
@@ -169,24 +171,30 @@ public class UserDetailsController {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                             user.getUsername(), user.getEmail(), user.getName(), likedYouUsernameList, youLikedUsernameList,
-                            matchedList, likeStatus));
+                            matchedList, likeStatus, verifiedStatus));
                 }
 
                 likeStatus = tokenUser.get().getYouLiked().contains(user.getEmail());
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), likeStatus));
+                        user.getUsername(), user.getEmail(), user.getName(), likeStatus, verifiedStatus));
 
             } catch (Exception e) {
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), likeStatus));
+                        user.getUsername(), user.getEmail(), user.getName(), likeStatus, verifiedStatus));
             }
         }
 
         return ResponseEntity.badRequest().body(new MessageInfoDto("Username not found"));
 
+    }
+
+    @PutMapping("/update_verified_status")
+    @ApiOperation("Update User Verified Status")
+    public void updateVerifiedStatus(@Valid @RequestParam String email, @Valid @RequestParam Boolean verifiedStatus) {
+        userRepository.updateVerifiedStatus(email, verifiedStatus);
     }
 }

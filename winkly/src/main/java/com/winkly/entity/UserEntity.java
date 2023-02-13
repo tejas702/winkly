@@ -92,6 +92,9 @@ public class UserEntity implements Serializable {
   @Nullable
   private String linktreeLink;
 
+  @Column(name = "verified_status")
+  private Boolean verifiedStatus = false;
+
   @Column(name = "liked_you")
   @ElementCollection
   @LazyCollection(LazyCollectionOption.FALSE)

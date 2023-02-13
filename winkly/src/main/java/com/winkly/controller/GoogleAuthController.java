@@ -99,7 +99,7 @@ public class GoogleAuthController {
                     RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
                     return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), user.getId(),
-                            username, userDetails.getEmail()), "Login Successful!"));
+                            username, userDetails.getEmail()), "Login Successful!", user.getVerifiedStatus()));
                 }
 
                 String email = idToken.getPayload().getEmail();
@@ -117,7 +117,7 @@ public class GoogleAuthController {
                 RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
                 return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), user.getId(),
-                        username, userDetails.getEmail()), "Login Successful!"));
+                        username, userDetails.getEmail()), "Login Successful!", user.getVerifiedStatus()));
             }
         }
         return ResponseEntity.ok().body(new MessageInfoDto("Login Unsuccessful!"));

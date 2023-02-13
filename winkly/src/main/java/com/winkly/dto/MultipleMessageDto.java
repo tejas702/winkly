@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class MultipleMessageDto {
     private JwtResponseDto jwtResponseDto;
     private String message;
+    private Boolean verifiedStatus;
 }

@@ -60,11 +60,13 @@ public class LoginController {
         Optional<UserEntity> user = userRepository.findByEmail(userDetails.getEmail());
         String username = user.get().getUsername();
 
+        Boolean verifiedStatus = user.get().getVerifiedStatus();
+
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 
         return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(),
                 refreshToken.getToken(), userDetails.getId(),
-                username, userDetails.getEmail()), "Login Successful!"));
+                username, userDetails.getEmail()), "Login Successful!", verifiedStatus));
     }
 
     @PostMapping("/refresh_token")
