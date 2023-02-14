@@ -60,7 +60,7 @@ public class LoginController {
         Optional<UserEntity> user = userRepository.findByEmail(userDetails.getEmail());
         String username = user.get().getUsername();
 
-        Boolean verifiedStatus = user.get().getVerifiedStatus();
+        String verifiedStatus = user.get().getVerifiedStatus();
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
 

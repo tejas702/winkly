@@ -93,7 +93,7 @@ public class UserEntity implements Serializable {
   private String linktreeLink;
 
   @Column(name = "verified_status")
-  private Boolean verifiedStatus = false;
+  private String verifiedStatus = "Pending";
 
   @Column(name = "liked_you")
   @ElementCollection

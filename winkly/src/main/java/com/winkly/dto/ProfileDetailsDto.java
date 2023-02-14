@@ -29,10 +29,10 @@ public class ProfileDetailsDto {
     private List<LikeListDto> youLikedList = new ArrayList<>();
     private List<LikeListDto> matchedList = new ArrayList<>();
     private Boolean likeStatus;
-    private Boolean verifiedStatus;
+    private String verifiedStatus;
     public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
                              String snapchatLink, String twitterLink, String username, String email, String name,
-                             Boolean likeStatus, Boolean verifiedStatus) {
+                             Boolean likeStatus, String verifiedStatus) {
         this.fbLink = fbLink;
         this.instaLink = instaLink;
         this.linktreeLink = linktreeLink;

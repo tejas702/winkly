@@ -127,7 +127,7 @@ public class UserDetailsController {
         if (userRepository.existsByUsername(username)) {
             String email = "";
             UserEntity user = userRepository.findByUsername(username);
-            Boolean verifiedStatus = user.getVerifiedStatus();
+            String verifiedStatus = user.getVerifiedStatus();
             Boolean likeStatus = null;
             Optional<UserEntity> tokenUser;
             List<LikeListDto> likedYouUsernameList = new ArrayList<>();
@@ -194,7 +194,7 @@ public class UserDetailsController {
 
     @PutMapping("/update_verified_status")
     @ApiOperation("Update User Verified Status")
-    public void updateVerifiedStatus(@Valid @RequestParam String email, @Valid @RequestParam Boolean verifiedStatus) {
+    public void updateVerifiedStatus(@Valid @RequestParam String email, @Valid @RequestParam String verifiedStatus) {
         userRepository.updateVerifiedStatus(email, verifiedStatus);
     }
 }

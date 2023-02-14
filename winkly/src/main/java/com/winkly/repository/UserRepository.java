@@ -60,6 +60,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
             nativeQuery = true)
     @Modifying
     @Transactional
-    void updateVerifiedStatus(@Param("email") String email, @Param("verifiedStatus") Boolean verifiedStatus);
+    void updateVerifiedStatus(@Param("email") String email, @Param("verifiedStatus") String verifiedStatus);
 
 }
