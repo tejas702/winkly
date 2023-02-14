@@ -194,7 +194,7 @@ public class UserDetailsController {
 
     @PutMapping("/update_verified_status")
     @ApiOperation("Update User Verified Status")
-    public void updateVerifiedStatus(@Valid @RequestParam String email, @Valid @RequestParam String verifiedStatus) {
-        userRepository.updateVerifiedStatus(email, verifiedStatus);
+    public void updateVerifiedStatus(@Valid @RequestParam String username) {
+        userRepository.updateVerifiedStatus(username, "Accepted");
     }
 }

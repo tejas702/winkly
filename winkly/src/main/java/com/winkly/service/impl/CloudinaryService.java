@@ -5,6 +5,10 @@ import com.winkly.config.JwtUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
+import com.winkly.entity.UserEntity;
+import com.winkly.repository.UserRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,8 +33,13 @@ public class CloudinaryService {
         @Value("${cloudinary.config.api_secret}")
         private String cloudConfigKey;
 
+        @Autowired
+        private UserRepository userRepository;
+
         public String upload(String authToken, MultipartFile file) {
             String email = jwtUtils.getEmailFromJwtToken(authToken);
+            Optional<UserEntity> user = userRepository.findByEmail(email);
+            String username = user.get().getUsername();
             Map config = new HashMap();
             config.put("cloud_name", cloudConfigName);
             config.put("api_key", cloudConfigApi);
@@ -38,7 +47,7 @@ public class CloudinaryService {
             Cloudinary cloudinary = new Cloudinary(config);
             if (email != null) {
                 try {
-                    Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+                    Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", username));
                     String publicId = uploadResult.get("public_id").toString();
                     String tempInfo = "Successfully Uploaded";
                     String info = "The user " + email + " successfully uploaded the file: " + publicId;

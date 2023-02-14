@@ -49,7 +49,7 @@ public class UploadProfile {
           String response = cloudinaryService.upload(authToken, file);
             if (response.equals("Successfully Uploaded")) {
                 String email = jwtUtils.getEmailFromJwtToken(authToken);
-                userRepository.updateVerifiedStatus(email, "Pending");
+                userRepository.updateVerifiedStatusEmail(email, "Pending");
                 return ResponseEntity.ok().body(new MessageInfoDto(response));
             }
           return ResponseEntity.badRequest().body(new MessageInfoDto(response));

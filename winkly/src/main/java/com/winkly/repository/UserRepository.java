@@ -56,10 +56,17 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByResetToken(String token);
 
     @Query(
+            value = "UPDATE user_table SET verified_status=:verifiedStatus WHERE username=:username",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateVerifiedStatus(@Param("username") String username, @Param("verifiedStatus") String verifiedStatus);
+
+    @Query(
             value = "UPDATE user_table SET verified_status=:verifiedStatus WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
-    void updateVerifiedStatus(@Param("email") String email, @Param("verifiedStatus") String verifiedStatus);
+    void updateVerifiedStatusEmail(@Param("email") String email, @Param("verifiedStatus") String verifiedStatus);
 
 }
