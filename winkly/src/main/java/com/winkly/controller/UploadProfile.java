@@ -26,10 +26,10 @@ public class UploadProfile {
 
     @PostMapping(value = "/upload", consumes = {"*/*"})
     public ResponseEntity upload(@RequestHeader(value = "Authorization") String authToken, @RequestPart(name = "file")
-        MultipartFile file, @RequestParam String username) throws IOException {
+        MultipartFile file) throws IOException {
         try {
-            String response = cloudinaryService.upload(authToken, username, file);
-            if (response.equals("Upload image again"))
+            String response = cloudinaryService.upload(authToken, file);
+            if (response.equals("Upload image again!"))
                 return ResponseEntity.badRequest().body(new MessageInfoDto(response));
             return ResponseEntity.ok().body(new MessageInfoDto(response));
         } catch (Exception e) {

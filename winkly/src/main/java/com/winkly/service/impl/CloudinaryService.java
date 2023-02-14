@@ -29,14 +29,14 @@ public class CloudinaryService {
         @Value("${cloudinary.config.api_secret}")
         private String cloudConfigKey;
 
-        public String upload(String authToken, String username, MultipartFile file) {
+        public String upload(String authToken, MultipartFile file) {
             String email = jwtUtils.getEmailFromJwtToken(authToken);
             Map config = new HashMap();
             config.put("cloud_name", cloudConfigName);
             config.put("api_key", cloudConfigApi);
             config.put("api_secret", cloudConfigKey);
             Cloudinary cloudinary = new Cloudinary(config);
-            if (username != null) {
+            if (email != null) {
                 try {
                     Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
                     String publicId = uploadResult.get("public_id").toString();
@@ -44,7 +44,7 @@ public class CloudinaryService {
                     return info;
                 } catch (Exception ex) {
                     String info = "The user " + email + " failed to load to Cloudinary the image file: " + file.getName();
-                    return "Upload image again";
+                    return "Upload image again!!";
                 }
             } else {
                 String info = "Error: a non authenticated user tried to upload a file (email: " + email + ", authToken: " + authToken + ")";
