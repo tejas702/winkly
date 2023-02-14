@@ -40,15 +40,16 @@ public class CloudinaryService {
                 try {
                     Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
                     String publicId = uploadResult.get("public_id").toString();
+                    String tempInfo = "Successfully Uploaded";
                     String info = "The user " + email + " successfully uploaded the file: " + publicId;
-                    return info;
+                    return tempInfo;
                 } catch (Exception ex) {
                     String info = "The user " + email + " failed to load to Cloudinary the image file: " + file.getName();
-                    return "Upload image again!!";
+                    return info;
                 }
             } else {
                 String info = "Error: a non authenticated user tried to upload a file (email: " + email + ", authToken: " + authToken + ")";
-                return "Upload image again";
+                return info;
             }
         }
 }

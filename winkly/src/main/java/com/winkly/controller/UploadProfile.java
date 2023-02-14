@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
@@ -25,15 +26,12 @@ public class UploadProfile {
     private final CloudinaryService cloudinaryService;
 
     @PostMapping(value = "/upload", consumes = {"*/*"})
-    public ResponseEntity upload(@RequestHeader(value = "Authorization") String authToken, @RequestPart(name = "file")
+    public ResponseEntity upload(@Valid @RequestHeader(value = "Authorization") String authToken, @RequestParam("file")
         MultipartFile file) throws IOException {
-        try {
-            String response = cloudinaryService.upload(authToken, file);
-            if (response.equals("Upload image again!"))
-                return ResponseEntity.badRequest().body(new MessageInfoDto(response));
+        String response = cloudinaryService.upload(authToken, file);
+        if (response.equals("Successfully Uploaded"))
             return ResponseEntity.ok().body(new MessageInfoDto(response));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new MessageInfoDto("Upload image again"));
-        }
+        return ResponseEntity.badRequest().body(new MessageInfoDto(response));
+
     }
 }
