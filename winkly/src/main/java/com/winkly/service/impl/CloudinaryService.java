@@ -44,11 +44,11 @@ public class CloudinaryService {
                     String info = "The user " + email + " successfully uploaded the file: " + publicId;
                     return tempInfo;
                 } catch (Exception ex) {
-                    String info = "The user " + email + " failed to load to Cloudinary the image file: " + file.getName();
+                    String info = "Invalid Image";
                     return info;
                 }
             } else {
-                String info = "Error: a non authenticated user tried to upload a file (email: " + email + ", authToken: " + authToken + ")";
+                String info = "Invalid Image";
                 return info;
             }
         }
