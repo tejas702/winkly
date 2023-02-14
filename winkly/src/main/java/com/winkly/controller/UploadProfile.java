@@ -1,5 +1,6 @@
 package com.winkly.controller;
 
+import com.winkly.config.JwtUtils;
 import com.winkly.dto.MessageInfoDto;
 import com.winkly.dto.UpdateUserDetailsDto;
 import com.winkly.entity.UserEntity;
@@ -27,6 +28,7 @@ public class UploadProfile {
 
     private final CloudinaryService cloudinaryService;
     private final UserRepository userRepository;
+    private final JwtUtils jwtUtils;
 
     @PostMapping(value = "/upload", consumes = {})
     public ResponseEntity upload(@Valid @RequestHeader(value = "Authorization") String authToken, @RequestParam("file")
@@ -46,8 +48,8 @@ public class UploadProfile {
           authToken = authToken.replace("Bearer ", "");
           String response = cloudinaryService.upload(authToken, file);
             if (response.equals("Successfully Uploaded")) {
-                UserEntity user = userRepository.findByResetToken(authToken);
-                userRepository.updateVerifiedStatus(user.getEmail(), "Pending");
+                String email = jwtUtils.getEmailFromJwtToken(authToken);
+                userRepository.updateVerifiedStatus(email, "Pending");
                 return ResponseEntity.ok().body(new MessageInfoDto(response));
             }
           return ResponseEntity.badRequest().body(new MessageInfoDto(response));
