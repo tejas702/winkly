@@ -2,6 +2,8 @@ package com.winkly.controller;
 
 import com.winkly.dto.MessageInfoDto;
 import com.winkly.dto.UpdateUserDetailsDto;
+import com.winkly.entity.UserEntity;
+import com.winkly.repository.UserRepository;
 import com.winkly.service.impl.CloudinaryService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.io.IOException;
 public class UploadProfile {
 
     private final CloudinaryService cloudinaryService;
+    private final UserRepository userRepository;
 
     @PostMapping(value = "/upload", consumes = {})
     public ResponseEntity upload(@Valid @RequestHeader(value = "Authorization") String authToken, @RequestParam("file")
@@ -42,8 +45,11 @@ public class UploadProfile {
             || extension.contains(".webp")) {
           authToken = authToken.replace("Bearer ", "");
           String response = cloudinaryService.upload(authToken, file);
-          if (response.equals("Successfully Uploaded"))
-            return ResponseEntity.ok().body(new MessageInfoDto(response));
+            if (response.equals("Successfully Uploaded")) {
+                UserEntity user = userRepository.findByResetToken(authToken);
+                userRepository.updateVerifiedStatus(user.getEmail(), "Pending");
+                return ResponseEntity.ok().body(new MessageInfoDto(response));
+            }
           return ResponseEntity.badRequest().body(new MessageInfoDto(response));
         }
         return ResponseEntity.badRequest().body(new MessageInfoDto("Invalid Image"));
