@@ -28,6 +28,7 @@ public class UploadProfile {
     @PostMapping(value = "/upload", consumes = {"*/*"})
     public ResponseEntity upload(@Valid @RequestHeader(value = "Authorization") String authToken, @RequestParam("file")
         MultipartFile file) throws IOException {
+        authToken = authToken.replace("Bearer ", "");
         String response = cloudinaryService.upload(authToken, file);
         if (response.equals("Successfully Uploaded"))
             return ResponseEntity.ok().body(new MessageInfoDto(response));
