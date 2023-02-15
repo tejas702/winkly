@@ -1,11 +1,9 @@
 package com.winkly.controller;
 
 import com.winkly.config.JwtUtils;
-import com.winkly.dto.LikeListDto;
-import com.winkly.dto.MessageInfoDto;
-import com.winkly.dto.ProfileDetailsDto;
-import com.winkly.dto.UpdateUserDetailsDto;
+import com.winkly.dto.*;
 import com.winkly.entity.Likes;
+import com.winkly.entity.Links;
 import com.winkly.entity.UserEntity;
 import com.winkly.repository.UserRepository;
 import io.swagger.annotations.Api;
@@ -171,20 +169,22 @@ public class UserDetailsController {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                             user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList,
-                            youLikedUsernameList, matchedList, likeStatus, verifiedStatus));
+                            youLikedUsernameList, matchedList, likeStatus, verifiedStatus, user.getExtraLinks()));
                 }
 
                 likeStatus = tokenUser.get().getYouLiked().stream().anyMatch(ele -> (ele.getEmail().equals(user.getEmail())));
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus));
+                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
+                        user.getExtraLinks()));
 
             } catch (Exception e) {
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus));
+                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
+                        user.getExtraLinks()));
             }
         }
 
@@ -196,5 +196,28 @@ public class UserDetailsController {
     @ApiOperation("Update User Verified Status")
     public void updateVerifiedStatus(@Valid @RequestParam String username) {
         userRepository.updateVerifiedStatus(username, "Accepted");
+    }
+
+    @PutMapping("/add_link")
+    @ApiOperation("Add New Link")
+    @Transactional
+    public ResponseEntity addLink(@Valid @RequestHeader(value = "Authorization") String token,
+                                  @RequestBody LinkDto linkDto) {
+
+        try {
+            token = token.replace("Bearer ", "");
+            String email = jwtUtils.getEmailFromJwtToken(token);
+
+            Optional<UserEntity> user = userRepository.findByEmail(email);
+
+            user.get().getExtraLinks().add(new Links(linkDto.getLinkName(), linkDto.getUrl()));
+
+            return ResponseEntity.ok().body(new MessageInfoDto("Link added"));
+
+        } catch (Exception e) {
+
+            return ResponseEntity.badRequest().body(new MessageInfoDto("Token error"));
+
+        }
     }
 }

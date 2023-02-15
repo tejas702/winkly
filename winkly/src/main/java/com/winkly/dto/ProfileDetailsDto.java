@@ -1,6 +1,7 @@
 package com.winkly.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.winkly.entity.Links;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,9 +31,10 @@ public class ProfileDetailsDto {
     private List<LikeListDto> matchedList = new ArrayList<>();
     private Boolean likeStatus;
     private String verifiedStatus;
+    private List<Links> extraLinksList = new ArrayList<>();
     public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
                              String snapchatLink, String twitterLink, String username, String email, String name,
-                             String bio, Boolean likeStatus, String verifiedStatus) {
+                             String bio, Boolean likeStatus, String verifiedStatus, List<Links> extraLinksList) {
         this.fbLink = fbLink;
         this.instaLink = instaLink;
         this.linktreeLink = linktreeLink;
@@ -45,5 +47,6 @@ public class ProfileDetailsDto {
         this.bio = bio;
         this.likeStatus = likeStatus;
         this.verifiedStatus = verifiedStatus;
+        this.extraLinksList = extraLinksList;
     }
 }
