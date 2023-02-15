@@ -5,6 +5,7 @@ import com.winkly.dto.LikeListDto;
 import com.winkly.dto.MessageInfoDto;
 import com.winkly.dto.ProfileDetailsDto;
 import com.winkly.dto.UpdateUserDetailsDto;
+import com.winkly.entity.Likes;
 import com.winkly.entity.UserEntity;
 import com.winkly.repository.UserRepository;
 import io.swagger.annotations.Api;
@@ -94,11 +95,14 @@ public class UserDetailsController {
         boolean liked = true;
         boolean matched = false;
 
-        if (!user.getLikedYou().contains(attractedEmail) && !attractedUser.get().getYouLiked().contains(email)) {
-            user.getLikedYou().add(attractedEmail);
-            attractedUser.get().getYouLiked().add(email);
+        if (!user.getLikedYou().stream().anyMatch(ele -> (ele.getEmail()).equals(attractedEmail)) &&
+                !attractedUser.get().getYouLiked().stream().anyMatch(ele -> (ele.getEmail()).equals(email))) {
+            user.getLikedYou().add(new Likes(attractedEmail, attractedUser.get().getUsername(),
+                    attractedUser.get().getName(), username.getReason()));
+            attractedUser.get().getYouLiked().add(new Likes(email, user.getUsername(), user.getName(), username.getReason()));
 
-            if (user.getYouLiked().contains(attractedEmail) && attractedUser.get().getLikedYou().contains(email)) {
+            if (user.getYouLiked().stream().anyMatch(ele -> (ele.getEmail()).equals(attractedEmail)) &&
+                    attractedUser.get().getLikedYou().stream().anyMatch(ele -> (ele.getEmail()).equals(email))) {
                 matched = true;
                 user.getMatched().add(attractedEmail);
                 attractedUser.get().getMatched().add(email);
@@ -107,8 +111,8 @@ public class UserDetailsController {
 
         } else {
             liked = false;
-            user.getLikedYou().remove(attractedEmail);
-            attractedUser.get().getYouLiked().remove(email);
+            user.getLikedYou().removeIf(ele -> (ele.getEmail()).equals(attractedEmail));
+            attractedUser.get().getYouLiked().removeIf(ele -> (ele.getEmail()).equals((email)));
 
             try {
                 user.getMatched().remove(attractedEmail);
@@ -123,7 +127,8 @@ public class UserDetailsController {
     @GetMapping("/get_profile")
     @ApiOperation("Get Profile Details")
     @Transactional
-    public ResponseEntity getProfile(@Valid @RequestHeader(value = "Authorization", required = false) String token, @RequestParam String username) {
+    public ResponseEntity getProfile(@Valid @RequestHeader(value = "Authorization", required = false) String token,
+                                     @RequestParam String username) {
 
         if (userRepository.existsByUsername(username)) {
             String email = "";
@@ -150,32 +155,26 @@ public class UserDetailsController {
                         }
                 );
 
-                user.getLikedYou().forEach(
-                                (String element) -> {
-                                    Optional<UserEntity> tempUser = userRepository.findByEmail(element);
-                                    if (!matchedSet.contains(tempUser.get().getEmail())) {
-                                        likedYouUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
-                                    }
-                                }
-                );
+                for (Likes like : user.getLikedYou()) {
+                    if (!matchedSet.contains(like.getEmail())) {
+                        likedYouUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
+                    }
+                }
 
-                user.getYouLiked().forEach(
-                        (String element) -> {
-                            Optional<UserEntity> tempUser = userRepository.findByEmail(element);
-                            if (!matchedSet.contains(tempUser.get().getEmail())) {
-                                youLikedUsernameList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
-                            }
-                        }
-                );
+                for (Likes like : user.getYouLiked()) {
+                    if (!matchedSet.contains(like.getEmail())) {
+                        youLikedUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
+                    }
+                }
 
                 if (user.getEmail().equals(email)) {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                            user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList, youLikedUsernameList,
-                            matchedList, likeStatus, verifiedStatus));
+                            user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList,
+                            youLikedUsernameList, matchedList, likeStatus, verifiedStatus));
                 }
 
-                likeStatus = tokenUser.get().getYouLiked().contains(user.getEmail());
+                likeStatus = tokenUser.get().getYouLiked().stream().anyMatch(ele -> (ele.getEmail().equals(user.getEmail())));
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),

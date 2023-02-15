@@ -14,4 +14,10 @@ import lombok.NoArgsConstructor;
 public class LikeListDto {
     private String name;
     private String username;
+    private String reason;
+
+    public LikeListDto(String name, String username) {
+        this.name = name;
+        this.username = username;
+    }
 }

@@ -1,10 +1,8 @@
 package com.winkly.entity;
 
-import com.winkly.dto.LikeDto;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.data.util.Pair;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -13,7 +11,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 @Table(
@@ -106,17 +106,17 @@ public class UserEntity implements Serializable {
   @Column(name = "liked_you")
   @ElementCollection
   @LazyCollection(LazyCollectionOption.FALSE)
-  private List<String> likedYou;
+  private List<Likes> likedYou = new ArrayList<>();
 
   @Column(name = "you_liked")
   @ElementCollection
   @LazyCollection(LazyCollectionOption.FALSE)
-  private List<String> youLiked;
+  private List<Likes> youLiked = new ArrayList<>();
 
   @Column(name = "matched")
   @ElementCollection
   @LazyCollection(LazyCollectionOption.FALSE)
-  private List<String> matched;
+  private List<String> matched = new ArrayList<>();
 
   public UserEntity(String email, String password) {
     this.email = email;
