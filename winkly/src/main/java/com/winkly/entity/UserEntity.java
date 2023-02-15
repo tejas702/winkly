@@ -4,6 +4,7 @@ import com.winkly.dto.LikeDto;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.data.util.Pair;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @Table(
@@ -54,6 +56,11 @@ public class UserEntity implements Serializable {
   @Size(max = 200)
   @Column(name = "name")
   private String name;
+
+  @NotBlank
+  @Size(max = 255)
+  @Column(name = "bio")
+  private String bio;
 
   @NotBlank
   @Size(max = 120)

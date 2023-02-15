@@ -32,26 +32,26 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(
             value = "UPDATE user_table SET fb_link=:fbLink, snapchat_link=:snapchatLink, twitter_link=:twitterLink," +
                     "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink, username=:username, " +
-                    "name=:name WHERE email=:email",
+                    "name=:name, bio=:bio WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
     void updateSocials(@Param("fbLink") String fbLink, @Param("twitterLink") String twitterLink, @Param("snapchatLink")
                        String snapchatLink, @Param("instaLink") String instaLink, @Param("linkedinLink") String
                        linkedinLink, @Param("linktreeLink") String linktreeLink, @Param("email") String email,
-                       @Param("username") String username, @Param("name") String name);
+                       @Param("username") String username, @Param("name") String name, @Param("bio") String bio);
 
     @Query(
             value = "UPDATE user_table SET fb_link=:fbLink, snapchat_link=:snapchatLink, twitter_link=:twitterLink," +
                     "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink, " +
-                    "name=:name WHERE email=:email",
+                    "name=:name, bio=:bio WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
     void updateNameAndSocialOnly(@Param("fbLink") String fbLink, @Param("twitterLink") String twitterLink,
                                  @Param("snapchatLink") String snapchatLink, @Param("instaLink") String instaLink,
                                  @Param("linkedinLink") String linkedinLink, @Param("linktreeLink") String linktreeLink,
-                                 @Param("email") String email, @Param("name") String name);
+                                 @Param("email") String email, @Param("name") String name, @Param("bio") String bio);
 
     UserEntity findByResetToken(String token);
 

@@ -1,7 +1,6 @@
 package com.winkly.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +24,7 @@ public class ProfileDetailsDto {
     private String username;
     private String email;
     private String name;
+    private String bio;
     private List<LikeListDto> likedYouList = new ArrayList<>();
     private List<LikeListDto> youLikedList = new ArrayList<>();
     private List<LikeListDto> matchedList = new ArrayList<>();
@@ -32,7 +32,7 @@ public class ProfileDetailsDto {
     private String verifiedStatus;
     public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
                              String snapchatLink, String twitterLink, String username, String email, String name,
-                             Boolean likeStatus, String verifiedStatus) {
+                             String bio, Boolean likeStatus, String verifiedStatus) {
         this.fbLink = fbLink;
         this.instaLink = instaLink;
         this.linktreeLink = linktreeLink;
@@ -42,6 +42,7 @@ public class ProfileDetailsDto {
         this.username = username;
         this.email = email;
         this.name = name;
+        this.bio = bio;
         this.likeStatus = likeStatus;
         this.verifiedStatus = verifiedStatus;
     }

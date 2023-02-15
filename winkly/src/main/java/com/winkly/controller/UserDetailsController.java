@@ -50,6 +50,7 @@ public class UserDetailsController {
             String snapchatLink = updateUserDetailsDto.getSnapchatLink();
             String twitterLink = updateUserDetailsDto.getTwitterLink();
             String name = updateUserDetailsDto.getName();
+            String bio = updateUserDetailsDto.getBio();
             token = token.replace("Bearer ", "");
             String email = jwtUtils.getEmailFromJwtToken(token);
             Optional<UserEntity> user = userRepository.findByEmail(email);
@@ -58,7 +59,7 @@ public class UserDetailsController {
             if (!userRepository.existsByUsername(username))
                 if (userName == null)
             userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
-                    email, username, name);
+                    email, username, name, bio);
                 else {
                     return ResponseEntity.badRequest().body("Username already exists!");
                 }
@@ -69,7 +70,7 @@ public class UserDetailsController {
                 String emailTemp = userRepository.findByUsername(userName).getEmail();
                 if (emailTemp.equals(email))
                 userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
-                        linktreeLink, email, name);
+                        linktreeLink, email, name, bio);
                 else
                     return ResponseEntity.badRequest().body("Username already exists!");
                 return ResponseEntity.ok().body(new MessageInfoDto("Details Updated"));
@@ -170,7 +171,7 @@ public class UserDetailsController {
                 if (user.getEmail().equals(email)) {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                            user.getUsername(), user.getEmail(), user.getName(), likedYouUsernameList, youLikedUsernameList,
+                            user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList, youLikedUsernameList,
                             matchedList, likeStatus, verifiedStatus));
                 }
 
@@ -178,13 +179,13 @@ public class UserDetailsController {
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), likeStatus, verifiedStatus));
+                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus));
 
             } catch (Exception e) {
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), likeStatus, verifiedStatus));
+                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus));
             }
         }
 
