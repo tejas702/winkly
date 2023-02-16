@@ -86,7 +86,8 @@ public class SecurityConfig {
                 .authorizeRequests().antMatchers("/winkly**", "/swagger-ui.html**",
                         "/swagger-resources/**", "/v2/api-docs**", "/webjars/**", "/winkly/**", "/winkly_session**",
                         "/winkly_session/**", "/winkly_google/**", "/winkly_google**", "/winkly_update**",
-                        "/winkly_update/**", "/winkly_verify/**", "/winkly_verify**").permitAll()
+                        "/winkly_update/**", "/winkly_verify/**", "/winkly_verify**", "/winkly_sitemap**",
+                        "/winkly_sitemap/**", "/winkly_search**", "/winkly_search/**").permitAll()
                 .anyRequest().authenticated().and().oauth2Login();
 
         http.authenticationProvider(authenticationProvider());

@@ -21,6 +21,7 @@ import java.util.List;
     indexes = {
       @Index(name = "table_symbol", columnList = "email", unique = true),
       @Index(name = "table_username", columnList = "username", unique = true),
+      @Index(name = "table_name", columnList = "name ASC")
     },
     uniqueConstraints = {
       @UniqueConstraint(columnNames = "email"),

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -68,5 +69,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Modifying
     @Transactional
     void updateVerifiedStatusEmail(@Param("email") String email, @Param("verifiedStatus") String verifiedStatus);
+
+    @Query(
+            value = "SELECT * FROM user_table WHERE (name REGEXP :regexp)",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    List<UserEntity> getSearchRegex(@Param("regexp") String regexp);
 
 }
