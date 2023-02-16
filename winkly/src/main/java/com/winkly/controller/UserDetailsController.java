@@ -153,7 +153,7 @@ public class UserDetailsController {
                             matchedList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
                         }
                 );
-                String likedYouReason = "";
+                String likedYouReason = null;
                 for (Likes like : user.getLikedYou()) {
                     if (like.getEmail().equals(tokenUser.get().getEmail())) {
                         likedYouReason = like.getReason();
@@ -162,7 +162,7 @@ public class UserDetailsController {
                         likedYouUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
                     }
                 }
-                String youLikedReason = "";
+                String youLikedReason = null;
                 for (Likes like : user.getYouLiked()) {
                     if (like.getEmail().equals(tokenUser.get().getEmail())) {
                         youLikedReason = like.getReason();
