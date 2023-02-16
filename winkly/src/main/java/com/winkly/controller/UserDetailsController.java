@@ -153,19 +153,22 @@ public class UserDetailsController {
                             matchedList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
                         }
                 );
-                String likedYouReason = null;
+
+                // TODO: existing flow of youLiked and likedYou feature is not clear will revamp in future.
+
+                String youLikedReason = null;
                 for (Likes like : user.getLikedYou()) {
                     if (like.getEmail().equals(tokenUser.get().getEmail())) {
-                        likedYouReason = like.getReason();
+                        youLikedReason = like.getReason();
                     }
                     if (!matchedSet.contains(like.getEmail())) {
                         likedYouUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
                     }
                 }
-                String youLikedReason = null;
+                String likedYouReason = null;
                 for (Likes like : user.getYouLiked()) {
                     if (like.getEmail().equals(tokenUser.get().getEmail())) {
-                        youLikedReason = like.getReason();
+                        likedYouReason = like.getReason();
                     }
                     if (!matchedSet.contains(like.getEmail())) {
                         youLikedUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
