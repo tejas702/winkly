@@ -84,6 +84,8 @@ public class UserDetailsController {
         UserEntity user = userRepository.findByUsername(username.getUsername());
         String email = user.getEmail();
 
+//        log.info("{}", username.toString());
+
         token = token.replace("Bearer ", "");
         String attractedEmail = jwtUtils.getEmailFromJwtToken(token);
 
@@ -151,14 +153,20 @@ public class UserDetailsController {
                             matchedList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
                         }
                 );
-
+                String likedYouReason = "";
                 for (Likes like : user.getLikedYou()) {
+                    if (like.getEmail().equals(tokenUser.get().getEmail())) {
+                        likedYouReason = like.getReason();
+                    }
                     if (!matchedSet.contains(like.getEmail())) {
                         likedYouUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
                     }
                 }
-
+                String youLikedReason = "";
                 for (Likes like : user.getYouLiked()) {
+                    if (like.getEmail().equals(tokenUser.get().getEmail())) {
+                        youLikedReason = like.getReason();
+                    }
                     if (!matchedSet.contains(like.getEmail())) {
                         youLikedUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
                     }
@@ -168,7 +176,8 @@ public class UserDetailsController {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                             user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList,
-                            youLikedUsernameList, matchedList, likeStatus, verifiedStatus, user.getExtraLinks()));
+                            youLikedUsernameList, matchedList, likeStatus, verifiedStatus, user.getExtraLinks(),
+                            "", ""));
                 }
 
                 likeStatus = tokenUser.get().getYouLiked().stream().anyMatch(ele -> (ele.getEmail().equals(user.getEmail())));
@@ -176,14 +185,14 @@ public class UserDetailsController {
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                         user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
-                        user.getExtraLinks()));
+                        user.getExtraLinks(), likedYouReason, youLikedReason));
 
             } catch (Exception e) {
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                         user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
-                        user.getExtraLinks()));
+                        user.getExtraLinks(), "", ""));
             }
         }
 
