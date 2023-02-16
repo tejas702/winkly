@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/winkly_search")
@@ -27,7 +29,11 @@ public class SearchController {
 
     @GetMapping("/search")
     @ApiOperation("Search User by Name")
-    public ResponseEntity getSearchResult(@RequestParam String searchString) {
+    public ResponseEntity getSearchResult(@RequestParam(required = false) String searchString) {
+
+        if (Objects.isNull(searchString)) {
+            return ResponseEntity.ok().body(new SearchDto(new ArrayList<>()));
+        }
 
         String regexp = "^" + searchString;
 
