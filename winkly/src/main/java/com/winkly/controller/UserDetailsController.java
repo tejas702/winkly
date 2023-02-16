@@ -220,22 +220,4 @@ public class UserDetailsController {
         }
     }
 
-    @GetMapping(path = "/sitemap", produces = MediaType.APPLICATION_XML_VALUE)
-    @ApiOperation("Sitemap api")
-    public ResponseEntity getSitemap() throws IOException {
-        String filePath = "winkly/src/main/resources/assets/sitemap.xml";
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath));
-        String line;
-        StringBuilder stringBuilder = new StringBuilder();
-
-        while((line = bufferedReader.readLine()) != null){
-            stringBuilder.append(line.trim());
-        }
-
-        String xml = stringBuilder.toString();
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_XML)
-                .body(xml);
-    }
 }
