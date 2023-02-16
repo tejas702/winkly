@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -32,17 +33,17 @@ public class SitemapController {
     @ApiOperation("Sitemap api")
     public ResponseEntity getSitemap() throws IOException {
 
-//        Resource resource = resourceLoader.getResource("classpath:assets/sitemap.xml");
-//        Reader reader = new InputStreamReader(resource.getInputStream());
-//        String content =  FileCopyUtils.copyToString(reader);
+        Resource resource = resourceLoader.getResource("classpath:sitemap.xml");
+        Reader reader = new InputStreamReader(resource.getInputStream());
+        String content =  FileCopyUtils.copyToString(reader);
 
-        String content = "this is content";
+//        String content = "this is content";
 
-        log.info("{}", content);
+//        log.info("{}", content);
 
 //        File file = new ClassPathResource("assets/sitemap.xml").getFile();
 //        String content = new String(Files.readAllBytes(file.toPath()));
 
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_XML).body(content);
+        return ResponseEntity.ok().body(content);
     }
 }
