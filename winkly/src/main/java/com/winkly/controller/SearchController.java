@@ -28,7 +28,7 @@ public class SearchController {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @PostMapping("/search")
+    @GetMapping("/search")
     @ApiOperation("Search User by Name")
     public ResponseEntity getSearchResult(@RequestParam String searchString) {
 
@@ -36,6 +36,8 @@ public class SearchController {
 
         List<UserEntity> resultList = userRepository.getSearchRegex(regexp);
 
-        return ResponseEntity.ok().body(new MessageInfoDto("result fetched"));
+        String content = resultList.toString();
+
+        return ResponseEntity.ok().body(new MessageInfoDto(content));
     }
 }
