@@ -2,6 +2,7 @@ package com.winkly.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.winkly.entity.Links;
+import com.winkly.entity.Problems;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,4 +26,5 @@ public class UpdateUserDetailsDto {
     private String name;
     private String bio;
     private List<Links> extraLinks;
+    private List<Problems> problemsList;
 }

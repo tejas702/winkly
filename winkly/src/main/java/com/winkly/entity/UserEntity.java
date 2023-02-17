@@ -124,6 +124,12 @@ public class UserEntity implements Serializable {
   @LazyCollection(LazyCollectionOption.FALSE)
   private List<Links> extraLinks = new ArrayList<>();
 
+  @Column(name = "problems")
+  @ElementCollection
+  @LazyCollection(LazyCollectionOption.FALSE)
+  private List<Problems> problems = new ArrayList<>();
+
+
   public UserEntity(String email, String password) {
     this.email = email;
     this.password = password;

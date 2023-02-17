@@ -4,6 +4,7 @@ import com.winkly.config.JwtUtils;
 import com.winkly.dto.*;
 import com.winkly.entity.Likes;
 import com.winkly.entity.Links;
+import com.winkly.entity.Problems;
 import com.winkly.entity.UserEntity;
 import com.winkly.repository.UserRepository;
 import io.swagger.annotations.Api;
@@ -18,10 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @RestController
@@ -56,16 +54,26 @@ public class UserDetailsController {
             String username = updateUserDetailsDto.getUsername();
             String userName = user.get().getUsername();
             List<Links> extraLinks = updateUserDetailsDto.getExtraLinks();
+            List<Problems> problemsList = updateUserDetailsDto.getProblemsList();
             if (!userRepository.existsByUsername(username))
                 if (userName == null) {
                     userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
                             email, username, name, bio);
 
-                    for (Links link : extraLinks) {
-                        if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
-                            user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+                    if (Objects.nonNull(extraLinks))
+                        for (Links link : extraLinks) {
+                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+                                user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+                            }
                         }
-                    }
+
+                    if (Objects.nonNull(problemsList))
+                        for (Problems problem : problemsList) {
+                            if (!user.get().getProblems().stream().anyMatch(ele -> (ele.getEmail().equals(problem.getEmail())))) {
+                                user.get().getProblems().add(new Problems(problem.getEmail(), problem.getProblem_1(),
+                                        problem.getProblem_2(), problem.getProblem_3(), problem.getProblem_4()));
+                            }
+                        }
                 }
                 else {
                     return ResponseEntity.badRequest().body("Username already exists!");
@@ -79,11 +87,20 @@ public class UserDetailsController {
                     userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
                             linktreeLink, email, name, bio);
 
-                    for (Links link : extraLinks) {
-                        if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
-                            user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+                    if (Objects.nonNull(extraLinks))
+                        for (Links link : extraLinks) {
+                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+                                user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+                            }
                         }
-                    }
+
+                    if (Objects.nonNull(problemsList))
+                        for (Problems problem : problemsList) {
+                            if (!user.get().getProblems().stream().anyMatch(ele -> (ele.getEmail().equals(problem.getEmail())))) {
+                                user.get().getProblems().add(new Problems(problem.getEmail(), problem.getProblem_1(),
+                                        problem.getProblem_2(), problem.getProblem_3(), problem.getProblem_4()));
+                            }
+                        }
                 }
                 else
                     return ResponseEntity.badRequest().body("Username already exists!");
