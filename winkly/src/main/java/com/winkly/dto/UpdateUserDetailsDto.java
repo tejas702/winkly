@@ -25,6 +25,6 @@ public class UpdateUserDetailsDto {
     private String username;
     private String name;
     private String bio;
-    private List<Links> extraLinks;
+    private List<Links> extraLinksList;
     private List<Problems> problemsList;
 }
