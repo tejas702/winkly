@@ -39,6 +39,7 @@ public class UserDetailsController {
 
     @PutMapping("/update_socials")
     @ApiOperation("Update User Social Details")
+    @Transactional
     public ResponseEntity updateUserDetails(@Valid @RequestBody UpdateUserDetailsDto updateUserDetailsDto,
                                             @RequestHeader("Authorization") String token) {
             String fbLink = updateUserDetailsDto.getFbLink();
@@ -54,10 +55,18 @@ public class UserDetailsController {
             Optional<UserEntity> user = userRepository.findByEmail(email);
             String username = updateUserDetailsDto.getUsername();
             String userName = user.get().getUsername();
+            List<Links> extraLinks = updateUserDetailsDto.getExtraLinks();
             if (!userRepository.existsByUsername(username))
-                if (userName == null)
-            userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
-                    email, username, name, bio);
+                if (userName == null) {
+                    userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
+                            email, username, name, bio);
+
+                    for (Links link : extraLinks) {
+                        if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+                            user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+                        }
+                    }
+                }
                 else {
                     return ResponseEntity.badRequest().body("Username already exists!");
                 }
@@ -66,9 +75,16 @@ public class UserDetailsController {
                 if (userName == null)
                     return ResponseEntity.badRequest().body("Username already exists!");
                 String emailTemp = userRepository.findByUsername(userName).getEmail();
-                if (emailTemp.equals(email))
-                userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
-                        linktreeLink, email, name, bio);
+                if (emailTemp.equals(email)) {
+                    userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
+                            linktreeLink, email, name, bio);
+
+                    for (Links link : extraLinks) {
+                        if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+                            user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+                        }
+                    }
+                }
                 else
                     return ResponseEntity.badRequest().body("Username already exists!");
                 return ResponseEntity.ok().body(new MessageInfoDto("Details Updated"));
@@ -83,8 +99,6 @@ public class UserDetailsController {
     public ResponseEntity updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
         UserEntity user = userRepository.findByUsername(username.getUsername());
         String email = user.getEmail();
-
-//        log.info("{}", username.toString());
 
         token = token.replace("Bearer ", "");
         String attractedEmail = jwtUtils.getEmailFromJwtToken(token);
@@ -207,29 +221,6 @@ public class UserDetailsController {
     @ApiOperation("Update User Verified Status")
     public void updateVerifiedStatus(@Valid @RequestParam String username) {
         userRepository.updateVerifiedStatus(username, "Accepted");
-    }
-
-    @PutMapping("/add_link")
-    @ApiOperation("Add New Link")
-    @Transactional
-    public ResponseEntity addLink(@Valid @RequestHeader(value = "Authorization") String token,
-                                  @RequestBody LinkDto linkDto) {
-
-        try {
-            token = token.replace("Bearer ", "");
-            String email = jwtUtils.getEmailFromJwtToken(token);
-
-            Optional<UserEntity> user = userRepository.findByEmail(email);
-
-            user.get().getExtraLinks().add(new Links(linkDto.getLinkName(), linkDto.getUrl()));
-
-            return ResponseEntity.ok().body(new MessageInfoDto("Link added"));
-
-        } catch (Exception e) {
-
-            return ResponseEntity.badRequest().body(new MessageInfoDto("Token error"));
-
-        }
     }
 
 }

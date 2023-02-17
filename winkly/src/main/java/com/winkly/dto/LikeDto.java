@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LikeDto {
-    private String username;
-    private String email;
     private String name;
+    private String username;
 }
