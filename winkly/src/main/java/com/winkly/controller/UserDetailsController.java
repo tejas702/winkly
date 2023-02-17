@@ -53,7 +53,7 @@ public class UserDetailsController {
             Optional<UserEntity> user = userRepository.findByEmail(email);
             String username = updateUserDetailsDto.getUsername();
             String userName = user.get().getUsername();
-            List<Links> extraLinks = updateUserDetailsDto.getExtraLinks();
+            List<Links> extraLinks = updateUserDetailsDto.getExtraLinksList();
             List<Problems> problemsList = updateUserDetailsDto.getProblemsList();
             if (!userRepository.existsByUsername(username))
                 if (userName == null) {
@@ -70,7 +70,7 @@ public class UserDetailsController {
                     if (Objects.nonNull(problemsList))
                         for (Problems problem : problemsList) {
                             if (!user.get().getProblems().stream().anyMatch(ele -> (ele.getEmail().equals(problem.getEmail())))) {
-                                user.get().getProblems().add(new Problems(problem.getEmail(), problem.getProblem_1(),
+                                user.get().getProblems().add(new Problems(email, problem.getProblem_1(),
                                         problem.getProblem_2(), problem.getProblem_3(), problem.getProblem_4()));
                             }
                         }
@@ -97,7 +97,7 @@ public class UserDetailsController {
                     if (Objects.nonNull(problemsList))
                         for (Problems problem : problemsList) {
                             if (!user.get().getProblems().stream().anyMatch(ele -> (ele.getEmail().equals(problem.getEmail())))) {
-                                user.get().getProblems().add(new Problems(problem.getEmail(), problem.getProblem_1(),
+                                user.get().getProblems().add(new Problems(email, problem.getProblem_1(),
                                         problem.getProblem_2(), problem.getProblem_3(), problem.getProblem_4()));
                             }
                         }
