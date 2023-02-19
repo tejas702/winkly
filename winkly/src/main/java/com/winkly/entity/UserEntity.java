@@ -8,6 +8,7 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -129,6 +130,9 @@ public class UserEntity implements Serializable {
   @LazyCollection(LazyCollectionOption.FALSE)
   private List<Problems> problems = new ArrayList<>();
 
+  @Column(name = "profile_picture")
+  @Nullable
+  private String profilePicture;
 
   public UserEntity(String email, String password) {
     this.email = email;

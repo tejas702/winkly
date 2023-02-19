@@ -7,6 +7,7 @@ import com.winkly.entity.Links;
 import com.winkly.entity.Problems;
 import com.winkly.entity.UserEntity;
 import com.winkly.repository.UserRepository;
+import com.winkly.service.impl.CloudinaryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.*;
 import java.util.*;
@@ -35,11 +37,14 @@ public class UserDetailsController {
     @Autowired
     private JwtUtils jwtUtils;
 
-    @PutMapping("/update_socials")
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
+    @PutMapping(value = "/update_socials", consumes = {"*/*"})
     @ApiOperation("Update User Social Details")
     @Transactional
-    public ResponseEntity updateUserDetails(@Valid @RequestBody UpdateUserDetailsDto updateUserDetailsDto,
-                                            @RequestHeader("Authorization") String token) {
+    public ResponseEntity updateUserDetails(@Valid @RequestPart UpdateUserDetailsDto updateUserDetailsDto,
+                                            @RequestHeader("Authorization") String token, @RequestPart(value = "file", required = false) MultipartFile file) {
             String fbLink = updateUserDetailsDto.getFbLink();
             String instaLink = updateUserDetailsDto.getInstaLink();
             String linktreeLink = updateUserDetailsDto.getLinktreeLink();
@@ -49,6 +54,29 @@ public class UserDetailsController {
             String name = updateUserDetailsDto.getName();
             String bio = updateUserDetailsDto.getBio();
             token = token.replace("Bearer ", "");
+            if(Objects.nonNull(file)) {
+                String extension = file.getOriginalFilename();
+                if (extension.contains(".png")
+                    || extension.contains(".jpg")
+                    || extension.contains(".jpeg")
+                    || extension.contains(".gif")
+                    || extension.contains(".apng")
+                    || extension.contains(".avif")
+                    || extension.contains(".jfif")
+                    || extension.contains(".pjpeg")
+                    || extension.contains(".pjp")
+                    || extension.contains(".svg")
+                    || extension.contains(".webp")) {
+
+                    String response = cloudinaryService.upload_profile_pic(token, file);
+                    if (!response.equals("Successfully Uploaded")) {
+                        return ResponseEntity.badRequest().body(new MessageInfoDto(response));
+                    }
+                }
+                else {
+                    return ResponseEntity.badRequest().body(new MessageInfoDto("Invalid Image"));
+                }
+            }
             String email = jwtUtils.getEmailFromJwtToken(token);
             Optional<UserEntity> user = userRepository.findByEmail(email);
             String username = updateUserDetailsDto.getUsername();
@@ -164,6 +192,7 @@ public class UserDetailsController {
             String email = "";
             UserEntity user = userRepository.findByUsername(username);
             String verifiedStatus = user.getVerifiedStatus();
+            String cloudUrl = user.getProfilePicture();
             Boolean likeStatus = null;
             Optional<UserEntity> tokenUser;
             List<LikeListDto> likedYouUsernameList = new ArrayList<>();
@@ -211,7 +240,7 @@ public class UserDetailsController {
                             user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                             user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList,
                             youLikedUsernameList, matchedList, likeStatus, verifiedStatus, user.getExtraLinks(),
-                            "", ""));
+                            "", "", cloudUrl));
                 }
 
                 likeStatus = tokenUser.get().getYouLiked().stream().anyMatch(ele -> (ele.getEmail().equals(user.getEmail())));
@@ -219,14 +248,14 @@ public class UserDetailsController {
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                         user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
-                        user.getExtraLinks(), likedYouReason, youLikedReason));
+                        user.getExtraLinks(), likedYouReason, youLikedReason, cloudUrl));
 
             } catch (Exception e) {
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
                         user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
                         user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
-                        user.getExtraLinks(), "", ""));
+                        user.getExtraLinks(), "", "", cloudUrl));
             }
         }
 

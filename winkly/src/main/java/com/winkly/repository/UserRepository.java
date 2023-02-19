@@ -77,4 +77,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Transactional
     List<String> getSearchRegex(@Param("regexp") String regexp);
 
+    @Query(
+            value = "UPDATE user_table SET profile_picture=:profilePicture WHERE email=:email",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateProfilePicture(@Param("email") String email, @Param("profilePicture") String profilePicture);
+
 }

@@ -34,10 +34,11 @@ public class ProfileDetailsDto {
     private List<Links> extraLinksList = new ArrayList<>();
     private String likedYouReason;
     private String youLikedReason;
+    private String profilePicture;
     public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
                              String snapchatLink, String twitterLink, String username, String email, String name,
                              String bio, Boolean likeStatus, String verifiedStatus, List<Links> extraLinksList,
-                             String likedYouReason, String youLikedReason) {
+                             String likedYouReason, String youLikedReason, String profilePicture) {
         this.fbLink = fbLink;
         this.instaLink = instaLink;
         this.linktreeLink = linktreeLink;
@@ -53,5 +54,6 @@ public class ProfileDetailsDto {
         this.extraLinksList = extraLinksList;
         this.likedYouReason = likedYouReason;
         this.youLikedReason = youLikedReason;
+        this.profilePicture = profilePicture;
     }
 }
