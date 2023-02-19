@@ -46,7 +46,7 @@ public class UserDetailsController {
     @ApiOperation("Update User Social Details")
     @Transactional
     public ResponseEntity updateUserDetails(@Valid @RequestPart String profile,
-                                            @RequestHeader("Authorization") String token, @RequestPart("file") MultipartFile file) {
+                                            @RequestHeader("Authorization") String token, @RequestPart(value = "file", required = false) MultipartFile file) {
             ObjectMapper objectMapper = new ObjectMapper();
             UpdateUserDetailsDto updateUserDetailsDto;
             try {
