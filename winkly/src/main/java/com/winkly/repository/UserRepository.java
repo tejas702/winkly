@@ -86,4 +86,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Transactional
     void updateProfilePicture(@Param("email") String email, @Param("profilePicture") String profilePicture);
 
+    @Query(
+            value = "UPDATE user_table SET username=:username WHERE email=:email",
+            nativeQuery = true)
+    @Modifying
+    @Transactional
+    void updateUsername(@Param("email") String email, @Param("username") String username);
+
 }

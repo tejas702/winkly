@@ -63,35 +63,36 @@ public class UserDetailsController {
             String name = updateUserDetailsDto.getName();
             String bio = updateUserDetailsDto.getBio();
             token = token.replace("Bearer ", "");
-            if(Objects.nonNull(file)) {
-                String extension = file.getOriginalFilename();
-                if (extension.contains(".png")
-                    || extension.contains(".jpg")
-                    || extension.contains(".jpeg")
-                    || extension.contains(".gif")
-                    || extension.contains(".apng")
-                    || extension.contains(".avif")
-                    || extension.contains(".jfif")
-                    || extension.contains(".pjpeg")
-                    || extension.contains(".pjp")
-                    || extension.contains(".svg")
-                    || extension.contains(".webp")) {
-
-                    String response = cloudinaryService.upload_profile_pic(token, file);
-                    if (!response.equals("Successfully Uploaded")) {
-                        return ResponseEntity.badRequest().body(new MessageInfoDto(response));
-                    }
-                }
-                else {
-                    return ResponseEntity.badRequest().body(new MessageInfoDto("Invalid Image"));
-                }
-            }
             String email = jwtUtils.getEmailFromJwtToken(token);
             Optional<UserEntity> user = userRepository.findByEmail(email);
             String username = updateUserDetailsDto.getUsername();
             String userName = user.get().getUsername();
             List<Links> extraLinks = updateUserDetailsDto.getExtraLinksList();
             List<Problems> problemsList = updateUserDetailsDto.getProblemsList();
+            if (!userRepository.existsByUsername(username)) {
+                userRepository.updateUsername(email, username);
+            }
+            if (Objects.nonNull(file)) {
+              String extension = file.getOriginalFilename();
+              if (extension.contains(".png")
+                || extension.contains(".jpg")
+                || extension.contains(".jpeg")
+                || extension.contains(".gif")
+                || extension.contains(".apng")
+                || extension.contains(".avif")
+                || extension.contains(".jfif")
+                || extension.contains(".pjpeg")
+                || extension.contains(".pjp")
+                || extension.contains(".svg")
+                || extension.contains(".webp")) {
+              String response = cloudinaryService.upload_profile_pic(token, file);
+              if (!response.equals("Successfully Uploaded")) {
+                  return ResponseEntity.badRequest().body(new MessageInfoDto(response));
+                }
+              } else {
+                return ResponseEntity.badRequest().body(new MessageInfoDto("Invalid Image"));
+              }
+            }
             if (!userRepository.existsByUsername(username))
                 if (userName == null) {
                     userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
