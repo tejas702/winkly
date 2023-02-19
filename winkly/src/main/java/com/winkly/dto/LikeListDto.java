@@ -14,10 +14,12 @@ import lombok.NoArgsConstructor;
 public class LikeListDto {
     private String name;
     private String username;
+    private String profilePicture;
     private String reason;
 
-    public LikeListDto(String name, String username) {
+    public LikeListDto(String name, String username, String profilePicture) {
         this.name = name;
         this.username = username;
+        this.profilePicture = profilePicture;
     }
 }

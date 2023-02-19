@@ -1,6 +1,7 @@
 package com.winkly.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.winkly.entity.SearchResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +15,5 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchDto {
-    private List<String> resultList;
+    private List<SearchResult> resultList;
 }

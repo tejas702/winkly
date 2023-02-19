@@ -1,6 +1,8 @@
 package com.winkly.repository;
 
+import com.winkly.dto.SearchDto;
 import com.winkly.dto.UpdateUserDetailsDto;
+import com.winkly.entity.SearchResult;
 import com.winkly.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -71,11 +73,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     void updateVerifiedStatusEmail(@Param("email") String email, @Param("verifiedStatus") String verifiedStatus);
 
     @Query(
-            value = "SELECT username FROM user_table WHERE (name REGEXP :regexp)",
+            value = "SELECT * FROM user_table WHERE (name REGEXP :regexp)",
             nativeQuery = true)
     @Modifying
     @Transactional
-    List<String> getSearchRegex(@Param("regexp") String regexp);
+    List<UserEntity> getSearchRegex(@Param("regexp") String regexp);
 
     @Query(
             value = "UPDATE user_table SET profile_picture=:profilePicture WHERE email=:email",

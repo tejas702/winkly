@@ -98,17 +98,23 @@ public class UserDetailsController {
                             email, username, name, bio);
 
 
-                    if (Objects.nonNull(user.get().getExtraLinks())) {
-                        for (Links link : user.get().getExtraLinks()) {
-                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
-                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
-                            }
-                        }
-                    }
+//                    if (Objects.nonNull(user.get().getExtraLinks())) {
+//                        for (Links link : user.get().getExtraLinks()) {
+////                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+//                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
+////                            }
+//                        }
+//                    }
+                    user.get().getExtraLinks().clear();
 
                     if (Objects.nonNull(extraLinks))
                         for (Links link : extraLinks) {
-                                user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+//                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+//                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
+//
+//                            }
+                            user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
+
                         }
 
                     if (Objects.nonNull(problemsList))
@@ -131,13 +137,15 @@ public class UserDetailsController {
                     userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
                             linktreeLink, email, name, bio);
 
-                    if (Objects.nonNull(user.get().getExtraLinks())) {
-                        for (Links link : user.get().getExtraLinks()) {
-                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
-                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
-                            }
-                        }
-                    }
+//                    if (Objects.nonNull(user.get().getExtraLinks())) {
+//                        for (Links link : user.get().getExtraLinks()) {
+////                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+//                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
+////                            }
+//                        }
+//                    }
+
+                    user.get().getExtraLinks().clear();
 
                     if (Objects.nonNull(extraLinks))
                         for (Links link : extraLinks) {
@@ -234,7 +242,8 @@ public class UserDetailsController {
                         (String element) -> {
                             Optional<UserEntity> tempUser = userRepository.findByEmail(element);
                             matchedSet.add(tempUser.get().getEmail());
-                            matchedList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername()));
+                            matchedList.add(new LikeListDto(tempUser.get().getName(), tempUser.get().getUsername(),
+                                    tempUser.get().getProfilePicture()));
                         }
                 );
 
@@ -246,7 +255,8 @@ public class UserDetailsController {
                         youLikedReason = like.getReason();
                     }
                     if (!matchedSet.contains(like.getEmail())) {
-                        likedYouUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
+                        likedYouUsernameList.add(new LikeListDto(like.getName(), like.getUsername(),
+                                userRepository.findByEmail(like.getEmail()).get().getProfilePicture(), like.getReason()));
                     }
                 }
                 String likedYouReason = null;
@@ -255,7 +265,8 @@ public class UserDetailsController {
                         likedYouReason = like.getReason();
                     }
                     if (!matchedSet.contains(like.getEmail())) {
-                        youLikedUsernameList.add(new LikeListDto(like.getName(), like.getUsername(), like.getReason()));
+                        youLikedUsernameList.add(new LikeListDto(like.getName(), like.getUsername(),
+                                userRepository.findByEmail(like.getEmail()).get().getProfilePicture(), like.getReason()));
                     }
                 }
 

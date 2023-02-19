@@ -2,6 +2,8 @@ package com.winkly.controller;
 
 import com.winkly.config.JwtUtils;
 import com.winkly.dto.SearchDto;
+import com.winkly.entity.SearchResult;
+import com.winkly.entity.UserEntity;
 import com.winkly.repository.UserRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +39,11 @@ public class SearchController {
 
         String regexp = "^" + searchString;
 
-        List<String> resultList = userRepository.getSearchRegex(regexp);
+        List<SearchResult> resultList = new ArrayList<>();
+
+        for (UserEntity result : userRepository.getSearchRegex(regexp)) {
+            resultList.add(new SearchResult(result.getUsername(), result.getName(), result.getProfilePicture()));
+        }
 
         return ResponseEntity.ok().body(new SearchDto(resultList));
     }
