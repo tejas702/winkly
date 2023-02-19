@@ -79,7 +79,7 @@ public class CloudinaryService {
                 Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", username + "-profile"));
                 String publicId = uploadResult.get("public_id").toString();
                 String tempInfo = "Successfully Uploaded";
-                String cloudUrl = cloudinary.url().secure(true).publicId(username + "-picture").generate();
+                String cloudUrl = cloudinary.url().secure(true).publicId(username + "-profile").generate();
                 userRepository.updateProfilePicture(email, cloudUrl);
                 String info = "The user " + email + " successfully uploaded the file: " + publicId;
                 return tempInfo;
