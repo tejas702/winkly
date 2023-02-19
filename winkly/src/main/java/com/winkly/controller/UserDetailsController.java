@@ -97,11 +97,18 @@ public class UserDetailsController {
                     userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
                             email, username, name, bio);
 
+
+                    if (Objects.nonNull(user.get().getExtraLinks())) {
+                        for (Links link : user.get().getExtraLinks()) {
+                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
+                            }
+                        }
+                    }
+
                     if (Objects.nonNull(extraLinks))
                         for (Links link : extraLinks) {
-                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
                                 user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
-                            }
                         }
 
                     if (Objects.nonNull(problemsList))
@@ -124,11 +131,19 @@ public class UserDetailsController {
                     userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
                             linktreeLink, email, name, bio);
 
+                    if (Objects.nonNull(user.get().getExtraLinks())) {
+                        for (Links link : user.get().getExtraLinks()) {
+                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
+                            }
+                        }
+                    }
+
                     if (Objects.nonNull(extraLinks))
                         for (Links link : extraLinks) {
-                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
+//                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
                                 user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
-                            }
+//                            }
                         }
 
                     if (Objects.nonNull(problemsList))
