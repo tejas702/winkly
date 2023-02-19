@@ -47,6 +47,9 @@ public class UserDetailsController {
     @Transactional
     public ResponseEntity updateUserDetails(@Valid @RequestPart String profile,
                                             @RequestHeader("Authorization") String token, @RequestPart(value = "file", required = false) MultipartFile file) {
+            if (jwtUtils.checkExpiryForAccessToken(token)) {
+                return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+            }
             ObjectMapper objectMapper = new ObjectMapper();
             UpdateUserDetailsDto updateUserDetailsDto;
             try {
@@ -175,6 +178,9 @@ public class UserDetailsController {
     @ApiOperation("Update Likes")
     @Transactional
     public ResponseEntity updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
+        if (jwtUtils.checkExpiryForAccessToken(token)) {
+            return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+        }
         UserEntity user = userRepository.findByUsername(username.getUsername());
         String email = user.getEmail();
 
@@ -221,6 +227,9 @@ public class UserDetailsController {
     public ResponseEntity getProfile(@Valid @RequestHeader(value = "Authorization", required = false) String token,
                                      @RequestParam String username) {
 
+        if (Objects.nonNull(token) && jwtUtils.checkExpiryForAccessToken(token)) {
+            return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+        }
         if (userRepository.existsByUsername(username)) {
             String email = "";
             UserEntity user = userRepository.findByUsername(username);

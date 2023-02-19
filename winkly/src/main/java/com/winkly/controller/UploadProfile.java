@@ -33,6 +33,9 @@ public class UploadProfile {
     @PostMapping(value = "/upload", consumes = {})
     public ResponseEntity upload(@Valid @RequestHeader(value = "Authorization") String authToken, @RequestParam("file")
         MultipartFile file) throws IOException {
+        if (jwtUtils.checkExpiryForAccessToken(authToken)) {
+            return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+        }
         String extension = file.getOriginalFilename();
         if (extension.contains(".png")
             || extension.contains(".jpg")

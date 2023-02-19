@@ -1,5 +1,6 @@
 package com.winkly.config;
 
+import com.nimbusds.jwt.JWT;
 import com.winkly.service.impl.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class JwtUtils {
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromEmail(userPrincipal.getEmail());
-        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(24 * 60 * 60).httpOnly(true).build();
+        ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt).path("/api").maxAge(30 * 60).httpOnly(true).build();
         return cookie;
     }
 
@@ -93,8 +94,28 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + (365 * 24 * 60 * 60)))
+                .setExpiration(new Date((new Date()).getTime() + (365L * 24 * 60 * 60 * 1000)))
                 .signWith(SignatureAlgorithm.HS512, jwtRefreshSecret)
                 .compact();
+    }
+
+    public Boolean checkExpiryForAccessToken(String token) {
+        Date date = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
+        Date checkDate = new Date();
+        long diff = date.getTime() - checkDate.getTime();
+//        logger.info("{}", date);
+//        logger.info("{}", checkDate);
+//        logger.info("{}", diff);
+        return (diff <= 0);
+    }
+
+    public Boolean checkExpiryForRefreshToken(String token) {
+        Date date = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody().getExpiration();
+        Date checkDate = new Date();
+        long diff = date.getTime() - checkDate.getTime();
+//        logger.info("{}", date);
+//        logger.info("{}", checkDate);
+//        logger.info("{}", diff);
+        return (diff <= 0);
     }
 }

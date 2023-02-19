@@ -24,9 +24,9 @@ public class RefreshTokenServiceImpl {
     @Autowired
     private JwtUtils jwtUtils;
 
-    public RefreshToken createRefreshToken(String email) {
+    public RefreshToken createRefreshToken(String token) {
+        String email = jwtUtils.getEmailFromJwtToken(token);
         RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUserEntity(userRepository.findByEmail(email).get());
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(jwtUtils.generateRefreshTokenFromEmail(email));
 

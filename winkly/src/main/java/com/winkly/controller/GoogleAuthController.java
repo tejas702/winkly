@@ -96,7 +96,7 @@ public class GoogleAuthController {
                     Optional<UserEntity> userTemp = userRepository.findByEmail(userDetails.getEmail());
                     String username = userTemp.get().getUsername();
 
-                    RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
+                    RefreshToken refreshToken = refreshTokenService.createRefreshToken(jwtCookie.getValue());
 
                     return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), user.getId(),
                             username, userDetails.getEmail()), "Login Successful!", user.getVerifiedStatus()));
@@ -114,7 +114,7 @@ public class GoogleAuthController {
                 Optional<UserEntity> userTemp = userRepository.findByEmail(userDetails.getEmail());
                 String username = userTemp.get().getUsername();
 
-                RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
+                RefreshToken refreshToken = refreshTokenService.createRefreshToken(jwtCookie.getValue());
 
                 return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), user.getId(),
                         username, userDetails.getEmail()), "Login Successful!", user.getVerifiedStatus()));

@@ -18,10 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -62,7 +59,7 @@ public class LoginController {
 
         String verifiedStatus = user.get().getVerifiedStatus();
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(jwtCookie.getValue());
 
         return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(),
                 refreshToken.getToken(), userDetails.getId(),
@@ -70,8 +67,26 @@ public class LoginController {
     }
 
     @PostMapping("/refresh_token")
-    public ResponseEntity refreshtoken(@Valid @RequestBody TokenRefreshRequestDto request) {
-        String requestRefreshToken = request.getRefreshToken();
-        return ResponseEntity.noContent().build();
+    public ResponseEntity refreshAccessToken(@Valid @RequestBody JwtRequestDto jwtRequestDto) {
+        if (jwtUtils.checkExpiryForRefreshToken(jwtRequestDto.getRefreshToken())) {
+          jwtRequestDto = refreshRefreshToken(jwtRequestDto);
+          return ResponseEntity.ok()
+              .body(
+                  new JwtRequestDto(
+                      jwtRequestDto.getAccessToken(),
+                      jwtRequestDto.getRefreshToken(),
+                      "Token refreshed"));
+        }
+        String email = jwtUtils.getEmailFromJwtRefreshToken(jwtRequestDto.getRefreshToken());
+        String newAccessToken = jwtUtils.generateTokenFromEmail(email);
+        return ResponseEntity.ok()
+            .body(new JwtRequestDto(newAccessToken, jwtRequestDto.getRefreshToken(), "Token refreshed"));
+    }
+
+    public JwtRequestDto refreshRefreshToken(@Valid @RequestBody JwtRequestDto jwtRequestDto) {
+        String email = jwtUtils.getEmailFromJwtRefreshToken(jwtRequestDto.getRefreshToken());
+        String newRefreshToken = jwtUtils.generateRefreshTokenFromEmail(email);
+        String newAccessToken = jwtUtils.generateTokenFromEmail(email);
+        return (new JwtRequestDto(newAccessToken, newRefreshToken, "Token refreshed"));
     }
 }

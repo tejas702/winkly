@@ -85,7 +85,7 @@ public class RegistrationController {
 
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(jwtCookie.getValue());
 
         return ResponseEntity.ok().body(new MultipleMessageDto(new JwtResponseDto(jwtCookie.getValue(), refreshToken.getToken(), userDetails.getId(),
                 userDetails.getUsername(), userDetails.getEmail()), "User Registered Successfully", user.getVerifiedStatus()));
