@@ -1,5 +1,7 @@
 package com.winkly.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.winkly.config.JwtUtils;
 import com.winkly.dto.*;
 import com.winkly.entity.Likes;
@@ -40,11 +42,18 @@ public class UserDetailsController {
     @Autowired
     private CloudinaryService cloudinaryService;
 
-    @PutMapping(value = "/update_socials", consumes = {"*/*"})
+    @PutMapping(value = "/update_socials")
     @ApiOperation("Update User Social Details")
     @Transactional
-    public ResponseEntity updateUserDetails(@Valid @RequestPart UpdateUserDetailsDto updateUserDetailsDto,
-                                            @RequestHeader("Authorization") String token, @RequestPart(value = "file", required = false) MultipartFile file) {
+    public ResponseEntity updateUserDetails(@Valid @RequestPart String profile,
+                                            @RequestHeader("Authorization") String token, @RequestPart("file") MultipartFile file) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            UpdateUserDetailsDto updateUserDetailsDto;
+            try {
+                updateUserDetailsDto = objectMapper.readValue(profile, UpdateUserDetailsDto.class);
+            } catch (JsonProcessingException e) {
+                return ResponseEntity.badRequest().body(new MessageInfoDto("Error Parsing"));
+            }
             String fbLink = updateUserDetailsDto.getFbLink();
             String instaLink = updateUserDetailsDto.getInstaLink();
             String linktreeLink = updateUserDetailsDto.getLinktreeLink();
