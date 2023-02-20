@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JwtRequestDto {
     private String accessToken;
@@ -23,11 +24,5 @@ public class JwtRequestDto {
     public JwtRequestDto(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-    }
-
-    public JwtRequestDto(String accessToken, String refreshToken, String message) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.message = message;
     }
 }
