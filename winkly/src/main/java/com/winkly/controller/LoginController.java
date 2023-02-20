@@ -73,6 +73,7 @@ public class LoginController {
         }
         String email = jwtUtils.getEmailFromJwtRefreshToken(jwtRequestDto.getRefreshToken());
         String newAccessToken = jwtUtils.generateTokenFromEmail(email);
-        return ResponseEntity.ok().body(new JwtRequestDto(newAccessToken, jwtRequestDto.getRefreshToken()));
+        String newRefreshToken = jwtUtils.generateRefreshTokenFromEmail(email);
+        return ResponseEntity.ok().body(new JwtRequestDto(newAccessToken, newRefreshToken));
     }
 }
