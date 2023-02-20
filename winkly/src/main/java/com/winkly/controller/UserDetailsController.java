@@ -49,7 +49,7 @@ public class UserDetailsController {
                                             @RequestHeader("Authorization") String token, @RequestPart(value = "file", required = false) MultipartFile file) {
             token = token.replace("Bearer ", "");
             if (jwtUtils.checkExpiryForAccessToken(token)) {
-                return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+                return ResponseEntity.badRequest().body(new JwtRequestDto(true));
             }
             ObjectMapper objectMapper = new ObjectMapper();
             UpdateUserDetailsDto updateUserDetailsDto;
@@ -181,7 +181,7 @@ public class UserDetailsController {
     public ResponseEntity updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
         token = token.replace("Bearer ", "");
         if (jwtUtils.checkExpiryForAccessToken(token)) {
-            return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+            return ResponseEntity.badRequest().body(new JwtRequestDto(true));
         }
         UserEntity user = userRepository.findByUsername(username.getUsername());
         String email = user.getEmail();
@@ -231,9 +231,9 @@ public class UserDetailsController {
 
         if (Objects.nonNull(token) && !token.isEmpty()) {
           token = token.replace("Bearer ", "");
-          if (jwtUtils.checkExpiryForAccessToken(token)) {
-            return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
-          }
+            if (jwtUtils.checkExpiryForAccessToken(token)) {
+                return ResponseEntity.badRequest().body(new JwtRequestDto(true));
+            }
         }
         if (userRepository.existsByUsername(username)) {
             String email = "";

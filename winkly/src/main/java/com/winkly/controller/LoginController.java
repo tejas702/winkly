@@ -69,24 +69,10 @@ public class LoginController {
     @PostMapping("/refresh_token")
     public ResponseEntity refreshAccessToken(@Valid @RequestBody JwtRequestDto jwtRequestDto) {
         if (jwtUtils.checkExpiryForRefreshToken(jwtRequestDto.getRefreshToken())) {
-          jwtRequestDto = refreshRefreshToken(jwtRequestDto);
-          return ResponseEntity.ok()
-              .body(
-                  new JwtRequestDto(
-                      jwtRequestDto.getAccessToken(),
-                      jwtRequestDto.getRefreshToken(),
-                      "Token refreshed"));
+            return ResponseEntity.badRequest().body(new JwtRequestDto(true));
         }
         String email = jwtUtils.getEmailFromJwtRefreshToken(jwtRequestDto.getRefreshToken());
         String newAccessToken = jwtUtils.generateTokenFromEmail(email);
-        return ResponseEntity.ok()
-            .body(new JwtRequestDto(newAccessToken, jwtRequestDto.getRefreshToken(), "Token refreshed"));
-    }
-
-    public JwtRequestDto refreshRefreshToken(@Valid @RequestBody JwtRequestDto jwtRequestDto) {
-        String email = jwtUtils.getEmailFromJwtRefreshToken(jwtRequestDto.getRefreshToken());
-        String newRefreshToken = jwtUtils.generateRefreshTokenFromEmail(email);
-        String newAccessToken = jwtUtils.generateTokenFromEmail(email);
-        return (new JwtRequestDto(newAccessToken, newRefreshToken, "Token refreshed"));
+        return ResponseEntity.ok().body(new JwtRequestDto(newAccessToken, jwtRequestDto.getRefreshToken()));
     }
 }

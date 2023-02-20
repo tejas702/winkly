@@ -13,11 +13,16 @@ import lombok.NoArgsConstructor;
 public class JwtRequestDto {
     private String accessToken;
     private String refreshToken;
+    private Boolean tokenExpired = false;
     private String message;
 
-    public JwtRequestDto(String accessToken, String message) {
+    public JwtRequestDto(Boolean tokenExpired) {
+        this.tokenExpired = tokenExpired;
+    }
+
+    public JwtRequestDto(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
-        this.message = message;
+        this.refreshToken = refreshToken;
     }
 
     public JwtRequestDto(String accessToken, String refreshToken, String message) {

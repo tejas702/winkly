@@ -1,6 +1,7 @@
 package com.winkly.controller;
 
 import com.winkly.config.JwtUtils;
+import com.winkly.dto.JwtRequestDto;
 import com.winkly.dto.MessageInfoDto;
 import com.winkly.dto.UpdateUserDetailsDto;
 import com.winkly.entity.UserEntity;
@@ -35,7 +36,7 @@ public class UploadProfile {
         MultipartFile file) throws IOException {
         authToken = authToken.replace("Bearer ", "");
         if (jwtUtils.checkExpiryForAccessToken(authToken)) {
-            return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+            return ResponseEntity.badRequest().body(new JwtRequestDto(true));
         }
         String extension = file.getOriginalFilename();
         if (extension.contains(".png")
