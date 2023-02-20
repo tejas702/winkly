@@ -100,22 +100,26 @@ public class JwtUtils {
     }
 
     public Boolean checkExpiryForAccessToken(String token) {
-        Date date = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
+        Date date;
+        try {
+            date = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getExpiration();
+        } catch (Exception e) {
+            return true;
+        }
         Date checkDate = new Date();
         long diff = date.getTime() - checkDate.getTime();
-//        logger.info("{}", date);
-//        logger.info("{}", checkDate);
-//        logger.info("{}", diff);
         return (diff <= 0);
     }
 
     public Boolean checkExpiryForRefreshToken(String token) {
-        Date date = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody().getExpiration();
+        Date date;
+        try {
+            date = Jwts.parser().setSigningKey(jwtRefreshSecret).parseClaimsJws(token).getBody().getExpiration();
+        } catch (Exception e) {
+            return true;
+        }
         Date checkDate = new Date();
         long diff = date.getTime() - checkDate.getTime();
-//        logger.info("{}", date);
-//        logger.info("{}", checkDate);
-//        logger.info("{}", diff);
         return (diff <= 0);
     }
 }
