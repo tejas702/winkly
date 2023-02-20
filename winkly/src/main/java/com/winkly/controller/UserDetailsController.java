@@ -47,6 +47,7 @@ public class UserDetailsController {
     @Transactional
     public ResponseEntity updateUserDetails(@Valid @RequestPart String profile,
                                             @RequestHeader("Authorization") String token, @RequestPart(value = "file", required = false) MultipartFile file) {
+            token = token.replace("Bearer ", "");
             if (jwtUtils.checkExpiryForAccessToken(token)) {
                 return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
             }
@@ -178,6 +179,7 @@ public class UserDetailsController {
     @ApiOperation("Update Likes")
     @Transactional
     public ResponseEntity updateLikes(@Valid @RequestHeader("Authorization") String token, @RequestBody LikeListDto username) {
+        token = token.replace("Bearer ", "");
         if (jwtUtils.checkExpiryForAccessToken(token)) {
             return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
         }
@@ -228,6 +230,7 @@ public class UserDetailsController {
                                      @RequestParam String username) {
 
         if (Objects.nonNull(token) && jwtUtils.checkExpiryForAccessToken(token)) {
+            token = token.replace("Bearer ", "");
             return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
         }
         if (userRepository.existsByUsername(username)) {
