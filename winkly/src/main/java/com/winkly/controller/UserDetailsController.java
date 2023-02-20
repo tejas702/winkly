@@ -226,12 +226,14 @@ public class UserDetailsController {
     @GetMapping("/get_profile")
     @ApiOperation("Get Profile Details")
     @Transactional
-    public ResponseEntity getProfile(@Valid @RequestHeader(value = "Authorization", required = false) String token,
+    public ResponseEntity getProfile(@RequestHeader(value = "Authorization", required = false) String token,
                                      @RequestParam String username) {
 
-        if (Objects.nonNull(token) && jwtUtils.checkExpiryForAccessToken(token)) {
-            token = token.replace("Bearer ", "");
+        if (Objects.nonNull(token) && !token.isEmpty()) {
+          token = token.replace("Bearer ", "");
+          if (jwtUtils.checkExpiryForAccessToken(token)) {
             return ResponseEntity.badRequest().body(new MessageInfoDto("Token Expired"));
+          }
         }
         if (userRepository.existsByUsername(username)) {
             String email = "";
