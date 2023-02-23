@@ -10,6 +10,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -30,6 +32,7 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 
 import javax.servlet.MultipartConfigElement;
 import java.util.Arrays;
+import java.util.Properties;
 
 @Configuration
 @EnableMethodSecurity(
@@ -87,7 +90,8 @@ public class SecurityConfig {
                         "/swagger-resources/**", "/v2/api-docs**", "/webjars/**", "/winkly/**", "/winkly_session**",
                         "/winkly_session/**", "/winkly_google/**", "/winkly_google**", "/winkly_update**",
                         "/winkly_update/**", "/winkly_verify/**", "/winkly_verify**", "/winkly_sitemap**",
-                        "/winkly_sitemap/**", "/winkly_search**", "/winkly_search/**").permitAll()
+                        "/winkly_sitemap/**", "/winkly_search**", "/winkly_search/**", "/reset_password",
+                        "/forgot_password").permitAll()
                 .anyRequest().authenticated().and().oauth2Login();
 
         http.authenticationProvider(authenticationProvider());
@@ -142,5 +146,23 @@ public class SecurityConfig {
         factory.setMaxFileSize(DataSize.ofBytes(20971520));
         factory.setMaxRequestSize(DataSize.ofBytes(20971520));
         return factory.createMultipartConfig();
+    }
+
+    @Bean
+    public JavaMailSender getJavaMailSender() {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
+
+        mailSender.setUsername("winklyteam@gmail.com");
+        mailSender.setPassword("uaeqypccwrbvprii");
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+
+        return mailSender;
     }
 }
