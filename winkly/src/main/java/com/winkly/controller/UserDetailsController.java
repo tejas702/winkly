@@ -315,7 +315,7 @@ public class UserDetailsController {
 
     @PutMapping("/update_verified_status")
     @ApiOperation("Update User Verified Status")
-    public void updateVerifiedStatus(@Valid @RequestParam String username) {
+    public void updateVerifiedStatus(@Valid @RequestBody String username) {
         userRepository.updateVerifiedStatus(username, "Accepted");
     }
 
