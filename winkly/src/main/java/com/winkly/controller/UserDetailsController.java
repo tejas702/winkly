@@ -15,14 +15,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
-import java.io.*;
 import java.util.*;
 
 
@@ -58,11 +56,7 @@ public class UserDetailsController {
             } catch (JsonProcessingException e) {
                 return ResponseEntity.badRequest().body(new MessageInfoDto("Error Parsing"));
             }
-            String fbLink = updateUserDetailsDto.getFbLink();
             String instaLink = updateUserDetailsDto.getInstaLink();
-            String linktreeLink = updateUserDetailsDto.getLinktreeLink();
-            String linkedinLink = updateUserDetailsDto.getLinkedinLink();
-            String snapchatLink = updateUserDetailsDto.getSnapchatLink();
             String twitterLink = updateUserDetailsDto.getTwitterLink();
             String name = updateUserDetailsDto.getName();
             String bio = updateUserDetailsDto.getBio();
@@ -97,27 +91,13 @@ public class UserDetailsController {
             }
             if (!userRepository.existsByUsername(username))
                 if (userName == null) {
-                    userRepository.updateSocials(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink, linktreeLink,
-                            email, username, name, bio);
+                    userRepository.updateSocials(twitterLink, instaLink, email, username, name, bio);
 
-
-//                    if (Objects.nonNull(user.get().getExtraLinks())) {
-//                        for (Links link : user.get().getExtraLinks()) {
-////                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
-//                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
-////                            }
-//                        }
-//                    }
                     user.get().getExtraLinks().clear();
 
                     if (Objects.nonNull(extraLinks))
                         for (Links link : extraLinks) {
-//                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
-//                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
-//
-//                            }
                             user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
-
                         }
 
                     if (Objects.nonNull(problemsList))
@@ -137,24 +117,13 @@ public class UserDetailsController {
                     return ResponseEntity.badRequest().body("Username already exists!");
                 String emailTemp = userRepository.findByUsername(userName).getEmail();
                 if (emailTemp.equals(email)) {
-                    userRepository.updateNameAndSocialOnly(fbLink, twitterLink, snapchatLink, instaLink, linkedinLink,
-                            linktreeLink, email, name, bio);
-
-//                    if (Objects.nonNull(user.get().getExtraLinks())) {
-//                        for (Links link : user.get().getExtraLinks()) {
-////                            if (!extraLinks.stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
-//                                user.get().getExtraLinks().removeIf(ele -> (ele.getLinkName().equals(link.getLinkName())));
-////                            }
-//                        }
-//                    }
+                    userRepository.updateNameAndSocialOnly(twitterLink, instaLink, email, name, bio);
 
                     user.get().getExtraLinks().clear();
 
                     if (Objects.nonNull(extraLinks))
                         for (Links link : extraLinks) {
-//                            if (!user.get().getExtraLinks().stream().anyMatch(ele -> (ele.getLinkName().equals(link.getLinkName())))) {
                                 user.get().getExtraLinks().add(new Links(link.getLinkName(), link.getUrl()));
-//                            }
                         }
 
                     if (Objects.nonNull(problemsList))
@@ -284,8 +253,7 @@ public class UserDetailsController {
                 }
 
                 if (user.getEmail().equals(email)) {
-                    return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
-                            user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
+                    return ResponseEntity.ok().body(new ProfileDetailsDto(user.getInstaLink(), user.getTwitterLink(),
                             user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList,
                             youLikedUsernameList, matchedList, likeStatus, verifiedStatus, user.getExtraLinks(),
                             "", "", cloudUrl));
@@ -293,15 +261,13 @@ public class UserDetailsController {
 
                 likeStatus = tokenUser.get().getYouLiked().stream().anyMatch(ele -> (ele.getEmail().equals(user.getEmail())));
 
-                return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
-                        user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
+                return ResponseEntity.ok().body(new ProfileDetailsDto(user.getInstaLink(), user.getTwitterLink(),
                         user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
                         user.getExtraLinks(), likedYouReason, youLikedReason, cloudUrl));
 
             } catch (Exception e) {
 
-                return ResponseEntity.ok().body(new ProfileDetailsDto(user.getFbLink(), user.getInstaLink(),
-                        user.getLinktreeLink(), user.getLinkedinLink(), user.getSnapchatLink(), user.getTwitterLink(),
+                return ResponseEntity.ok().body(new ProfileDetailsDto(user.getInstaLink(), user.getTwitterLink(),
                         user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
                         user.getExtraLinks(), "", "", cloudUrl));
             }

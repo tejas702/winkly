@@ -16,11 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ProfileDetailsDto {
-    private String fbLink;
     private String instaLink;
-    private String linktreeLink;
-    private String linkedinLink;
-    private String snapchatLink;
     private String twitterLink;
     private String username;
     private String email;
@@ -35,15 +31,10 @@ public class ProfileDetailsDto {
     private String likedYouReason;
     private String youLikedReason;
     private String profilePicture;
-    public ProfileDetailsDto(String fbLink, String instaLink, String linktreeLink, String linkedinLink,
-                             String snapchatLink, String twitterLink, String username, String email, String name,
+    public ProfileDetailsDto(String instaLink, String twitterLink, String username, String email, String name,
                              String bio, Boolean likeStatus, String verifiedStatus, List<Links> extraLinksList,
                              String likedYouReason, String youLikedReason, String profilePicture) {
-        this.fbLink = fbLink;
         this.instaLink = instaLink;
-        this.linktreeLink = linktreeLink;
-        this.linkedinLink = linkedinLink;
-        this.snapchatLink = snapchatLink;
         this.twitterLink = twitterLink;
         this.username = username;
         this.email = email;

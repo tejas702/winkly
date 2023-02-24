@@ -8,13 +8,10 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 @Table(
@@ -77,10 +74,6 @@ public class UserEntity implements Serializable {
   @Nullable
   private LocalDateTime tokenCreationTime;
 
-  @Column(name = "fb_link")
-  @Nullable
-  private String fbLink;
-
   @Column(name = "twitter_link")
   @Nullable
   private String twitterLink;
@@ -88,18 +81,6 @@ public class UserEntity implements Serializable {
   @Column(name = "insta_link")
   @Nullable
   private String instaLink;
-
-  @Column(name = "snapchat_link")
-  @Nullable
-  private String snapchatLink;
-
-  @Column(name = "linkedin_link")
-  @Nullable
-  private String linkedinLink;
-
-  @Column(name = "linktree_link")
-  @Nullable
-  private String linktreeLink;
 
   @Column(name = "verified_status")
   @Nullable

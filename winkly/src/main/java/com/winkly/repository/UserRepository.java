@@ -1,8 +1,5 @@
 package com.winkly.repository;
 
-import com.winkly.dto.SearchDto;
-import com.winkly.dto.UpdateUserDetailsDto;
-import com.winkly.entity.SearchResult;
 import com.winkly.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,27 +29,24 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 
     @Query(
-            value = "UPDATE user_table SET fb_link=:fbLink, snapchat_link=:snapchatLink, twitter_link=:twitterLink," +
-                    "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink, username=:username, " +
+            value = "UPDATE user_table SET twitter_link=:twitterLink," +
+                    "insta_link=:instaLink, username=:username, " +
                     "name=:name, bio=:bio WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
-    void updateSocials(@Param("fbLink") String fbLink, @Param("twitterLink") String twitterLink, @Param("snapchatLink")
-                       String snapchatLink, @Param("instaLink") String instaLink, @Param("linkedinLink") String
-                       linkedinLink, @Param("linktreeLink") String linktreeLink, @Param("email") String email,
-                       @Param("username") String username, @Param("name") String name, @Param("bio") String bio);
+    void updateSocials(@Param("twitterLink") String twitterLink, @Param("instaLink") String instaLink,
+                       @Param("email") String email, @Param("username") String username, @Param("name") String name,
+                       @Param("bio") String bio);
 
     @Query(
-            value = "UPDATE user_table SET fb_link=:fbLink, snapchat_link=:snapchatLink, twitter_link=:twitterLink," +
-                    "insta_link=:instaLink, linkedin_link=:linkedinLink, linktree_link=:linktreeLink, " +
+            value = "UPDATE user_table SET twitter_link=:twitterLink," +
+                    "insta_link=:instaLink," +
                     "name=:name, bio=:bio WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
-    void updateNameAndSocialOnly(@Param("fbLink") String fbLink, @Param("twitterLink") String twitterLink,
-                                 @Param("snapchatLink") String snapchatLink, @Param("instaLink") String instaLink,
-                                 @Param("linkedinLink") String linkedinLink, @Param("linktreeLink") String linktreeLink,
+    void updateNameAndSocialOnly(@Param("twitterLink") String twitterLink, @Param("instaLink") String instaLink,
                                  @Param("email") String email, @Param("name") String name, @Param("bio") String bio);
 
     UserEntity findByResetToken(String token);
