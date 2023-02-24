@@ -22,6 +22,8 @@ public class ProfileDetailsDto {
     private String email;
     private String name;
     private String bio;
+    private Integer age;
+    private String location;
     private List<LikeListDto> likedYouList = new ArrayList<>();
     private List<LikeListDto> youLikedList = new ArrayList<>();
     private List<LikeListDto> matchedList = new ArrayList<>();
@@ -32,7 +34,7 @@ public class ProfileDetailsDto {
     private String youLikedReason;
     private String profilePicture;
     public ProfileDetailsDto(String instaLink, String twitterLink, String username, String email, String name,
-                             String bio, Boolean likeStatus, String verifiedStatus, List<Links> extraLinksList,
+                             String bio, Integer age, String location, Boolean likeStatus, String verifiedStatus, List<Links> extraLinksList,
                              String likedYouReason, String youLikedReason, String profilePicture) {
         this.instaLink = instaLink;
         this.twitterLink = twitterLink;
@@ -40,6 +42,8 @@ public class ProfileDetailsDto {
         this.email = email;
         this.name = name;
         this.bio = bio;
+        this.age = age;
+        this.location = location;
         this.likeStatus = likeStatus;
         this.verifiedStatus = verifiedStatus;
         this.extraLinksList = extraLinksList;

@@ -60,6 +60,8 @@ public class UserDetailsController {
             String twitterLink = updateUserDetailsDto.getTwitterLink();
             String name = updateUserDetailsDto.getName();
             String bio = updateUserDetailsDto.getBio();
+            Integer age = updateUserDetailsDto.getAge();
+            String location = updateUserDetailsDto.getLocation();
             token = token.replace("Bearer ", "");
             String email = jwtUtils.getEmailFromJwtToken(token);
             Optional<UserEntity> user = userRepository.findByEmail(email);
@@ -91,7 +93,7 @@ public class UserDetailsController {
             }
             if (!userRepository.existsByUsername(username))
                 if (userName == null) {
-                    userRepository.updateSocials(twitterLink, instaLink, email, username, name, bio);
+                    userRepository.updateSocials(twitterLink, instaLink, email, username, name, bio, age, location);
 
                     user.get().getExtraLinks().clear();
 
@@ -117,7 +119,7 @@ public class UserDetailsController {
                     return ResponseEntity.badRequest().body("Username already exists!");
                 String emailTemp = userRepository.findByUsername(userName).getEmail();
                 if (emailTemp.equals(email)) {
-                    userRepository.updateNameAndSocialOnly(twitterLink, instaLink, email, name, bio);
+                    userRepository.updateNameAndSocialOnly(twitterLink, instaLink, email, name, bio, age, location);
 
                     user.get().getExtraLinks().clear();
 
@@ -254,22 +256,24 @@ public class UserDetailsController {
 
                 if (user.getEmail().equals(email)) {
                     return ResponseEntity.ok().body(new ProfileDetailsDto(user.getInstaLink(), user.getTwitterLink(),
-                            user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likedYouUsernameList,
-                            youLikedUsernameList, matchedList, likeStatus, verifiedStatus, user.getExtraLinks(),
-                            "", "", cloudUrl));
+                            user.getUsername(), user.getEmail(), user.getName(), user.getBio(), user.getAge(),
+                            user.getLocation(), likedYouUsernameList, youLikedUsernameList, matchedList, likeStatus,
+                            verifiedStatus, user.getExtraLinks(), "", "", cloudUrl));
                 }
 
                 likeStatus = tokenUser.get().getYouLiked().stream().anyMatch(ele -> (ele.getEmail().equals(user.getEmail())));
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getInstaLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
-                        user.getExtraLinks(), likedYouReason, youLikedReason, cloudUrl));
+                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), user.getAge(),
+                        user.getLocation(), likeStatus, verifiedStatus, user.getExtraLinks(), likedYouReason,
+                        youLikedReason, cloudUrl));
 
             } catch (Exception e) {
 
                 return ResponseEntity.ok().body(new ProfileDetailsDto(user.getInstaLink(), user.getTwitterLink(),
-                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), likeStatus, verifiedStatus,
-                        user.getExtraLinks(), "", "", cloudUrl));
+                        user.getUsername(), user.getEmail(), user.getName(), user.getBio(), user.getAge(),
+                        user.getLocation(), likeStatus, verifiedStatus, user.getExtraLinks(), "",
+                        "", cloudUrl));
             }
         }
 

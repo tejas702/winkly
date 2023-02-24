@@ -61,8 +61,8 @@ public class ResetPasswordController {
         MimeMessageHelper helper = new MimeMessageHelper(message, "UTF-8");
 
         try {
-            msg.setFrom("winklyteam@gmail.com");
-            helper.setFrom("winklyteam@gmail.com", "Winklyy Support");
+            msg.setFrom("team@winklyy.com");
+            helper.setFrom("team@winklyy.com", "Winklyy Support");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -62,6 +62,16 @@ public class UserEntity implements Serializable {
   private String bio;
 
   @NotBlank
+  @Size(max = 255)
+  @Column(name = "age")
+  private Integer age;
+
+  @NotBlank
+  @Size(max = 255)
+  @Column(name = "location")
+  private String location;
+
+  @NotBlank
   @Size(max = 120)
   @Column(name = "password")
   private String password;

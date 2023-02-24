@@ -31,23 +31,24 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(
             value = "UPDATE user_table SET twitter_link=:twitterLink," +
                     "insta_link=:instaLink, username=:username, " +
-                    "name=:name, bio=:bio WHERE email=:email",
+                    "name=:name, bio=:bio, age=:age, location=:location WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
     void updateSocials(@Param("twitterLink") String twitterLink, @Param("instaLink") String instaLink,
                        @Param("email") String email, @Param("username") String username, @Param("name") String name,
-                       @Param("bio") String bio);
+                       @Param("bio") String bio, @Param("age") Integer age, @Param("location") String location);
 
     @Query(
             value = "UPDATE user_table SET twitter_link=:twitterLink," +
                     "insta_link=:instaLink," +
-                    "name=:name, bio=:bio WHERE email=:email",
+                    "name=:name, bio=:bio, age=:age, location=:location WHERE email=:email",
             nativeQuery = true)
     @Modifying
     @Transactional
     void updateNameAndSocialOnly(@Param("twitterLink") String twitterLink, @Param("instaLink") String instaLink,
-                                 @Param("email") String email, @Param("name") String name, @Param("bio") String bio);
+                                 @Param("email") String email, @Param("name") String name, @Param("bio") String bio,
+                                 @Param("age") Integer age, @Param("location") String location);
 
     UserEntity findByResetToken(String token);
 

@@ -151,11 +151,11 @@ public class SecurityConfig {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
+        mailSender.setHost("smtpout.secureserver.net");
+        mailSender.setPort(465);
 
-        mailSender.setUsername("winklyteam@gmail.com");
-        mailSender.setPassword("uaeqypccwrbvprii");
+        mailSender.setUsername("team@winklyy.com");
+        mailSender.setPassword("AshishAkashRudranshTejas@1");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
