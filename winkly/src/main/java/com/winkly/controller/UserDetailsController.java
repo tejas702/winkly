@@ -313,8 +313,9 @@ public class UserDetailsController {
 
     @PutMapping("/update_verified_status")
     @ApiOperation("Update User Verified Status")
-    public void updateVerifiedStatus(@Valid @RequestParam String username) {
-        userRepository.updateVerifiedStatus(username, "Accepted");
+    public void updateVerifiedStatus(@RequestBody UsernameDto usernameDto) {
+        UserEntity user = userRepository.findByUsername(usernameDto.getUsername());
+        userRepository.updateVerifiedStatusEmail(user.getEmail(), "Accepted");
     }
 
 }
