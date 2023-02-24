@@ -73,9 +73,7 @@ public class UserDetailsController {
             String userName = user.get().getUsername();
             List<Links> extraLinks = updateUserDetailsDto.getExtraLinksList();
             List<Problems> problemsList = updateUserDetailsDto.getProblemsList();
-            if (!userRepository.existsByUsername(username)) {
-                userRepository.updateUsername(email, username);
-            }
+
             if (Objects.nonNull(file)) {
               String extension = file.getOriginalFilename();
               if (extension.contains(".png")

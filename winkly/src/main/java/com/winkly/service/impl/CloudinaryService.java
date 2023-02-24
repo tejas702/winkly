@@ -68,7 +68,7 @@ public class CloudinaryService {
     public String upload_profile_pic(String authToken, MultipartFile file) {
         String email = jwtUtils.getEmailFromJwtToken(authToken);
         Optional<UserEntity> user = userRepository.findByEmail(email);
-        String username = user.get().getUsername();
+        Long id = user.get().getId();
         Map config = new HashMap();
         config.put("cloud_name", cloudConfigName);
         config.put("api_key", cloudConfigApi);
@@ -76,10 +76,10 @@ public class CloudinaryService {
         Cloudinary cloudinary = new Cloudinary(config);
         if (email != null) {
             try {
-                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", username + "-profile"));
+                Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("public_id", "id_" + id + "-profile"));
                 String publicId = uploadResult.get("public_id").toString();
                 String tempInfo = "Successfully Uploaded";
-                String cloudUrl = cloudinary.url().secure(true).publicId(username + "-profile").generate();
+                String cloudUrl = cloudinary.url().secure(true).publicId("id_" + id + "-profile").generate();
                 userRepository.updateProfilePicture(email, cloudUrl);
                 String info = "The user " + email + " successfully uploaded the file: " + publicId;
                 return tempInfo;
