@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -31,6 +32,10 @@ public class FeedbackEntity {
     private Long id;
 
     @NotBlank
+    @Column(name = "name")
+    private String name;
+
+    @NotBlank
     @Size(max = 50)
     @Email
     @Column(name = "email")
@@ -38,5 +43,6 @@ public class FeedbackEntity {
 
     @NotBlank
     @Column(name = "response")
+    @Size(max = 255)
     private String response;
 }

@@ -4,10 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.winkly.config.JwtUtils;
 import com.winkly.dto.*;
-import com.winkly.entity.Likes;
-import com.winkly.entity.Links;
-import com.winkly.entity.Problems;
-import com.winkly.entity.UserEntity;
+import com.winkly.entity.*;
+import com.winkly.repository.FeedbackRepository;
 import com.winkly.repository.UserRepository;
 import com.winkly.service.impl.CloudinaryService;
 import io.swagger.annotations.Api;
@@ -39,6 +37,9 @@ public class UserDetailsController {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
     @PutMapping(value = "/update_socials")
     @ApiOperation("Update User Social Details")
@@ -116,7 +117,7 @@ public class UserDetailsController {
             else {
                 //can update social links and name only
                 if (userName == null)
-                    return ResponseEntity.badRequest().body("Username already exists!");
+                    return ResponseEntity.badRequest().body(new MessageInfoDto("Username does not exist!"));
                 String emailTemp = userRepository.findByUsername(userName).getEmail();
                 if (emailTemp.equals(email)) {
                     userRepository.updateNameAndSocialOnly(twitterLink, instaLink, email, name, bio, age, location);
@@ -137,7 +138,7 @@ public class UserDetailsController {
                         }
                 }
                 else
-                    return ResponseEntity.badRequest().body("Username already exists!");
+                    return ResponseEntity.badRequest().body(new MessageInfoDto("Username already exists!"));
                 return ResponseEntity.ok().body(new MessageInfoDto("Details Updated"));
             }
 
@@ -286,6 +287,18 @@ public class UserDetailsController {
     public void updateVerifiedStatus(@RequestBody UsernameDto usernameDto) {
         UserEntity user = userRepository.findByUsername(usernameDto.getUsername());
         userRepository.updateVerifiedStatusEmail(user.getEmail(), "Accepted");
+    }
+
+    @PutMapping("/send_feedback")
+    @ApiOperation("Send Feedback")
+    public ResponseEntity sendFeedback(@RequestBody SendFeedbackDto sendFeedbackDto) {
+    FeedbackEntity feedbackEntity = FeedbackEntity.builder()
+            .email(sendFeedbackDto.getEmail())
+            .name(sendFeedbackDto.getName())
+            .response(sendFeedbackDto.getResponse())
+            .build();
+        feedbackRepository.save(feedbackEntity);
+        return ResponseEntity.ok().build();
     }
 
 }
