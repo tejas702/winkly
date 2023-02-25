@@ -12,12 +12,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Table(
-        name = "feedback_table",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "email")
-        }
-)
+@Table(name = "feedback_table")
 @Entity
 @Data
 @AllArgsConstructor
