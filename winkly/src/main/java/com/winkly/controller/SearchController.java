@@ -29,6 +29,17 @@ public class SearchController {
     @Autowired
     private JwtUtils jwtUtils;
 
+    public String escapeMetaCharacters(String inputString){
+        final String[] metaCharacters = {"\\","^","$","{","}","[","]","(",")",".","*","+","?","|","<",">","-","&","%"};
+
+        for (int i = 0 ; i < metaCharacters.length ; i++){
+            if(inputString.contains(metaCharacters[i])){
+                inputString = inputString.replace(metaCharacters[i],"\\"+metaCharacters[i]);
+            }
+        }
+        return inputString;
+    }
+
     @GetMapping("/search")
     @ApiOperation("Search User by Name")
     public ResponseEntity getSearchResult(@RequestParam(required = false) String searchString) {
@@ -37,11 +48,17 @@ public class SearchController {
             return ResponseEntity.ok().body(new SearchDto(new ArrayList<>()));
         }
 
-        String regexp = "^" + searchString;
+        searchString = escapeMetaCharacters(searchString);
+
+        String start_regexp = "^" + searchString;
+
+        String regexp = "\\s" + searchString;
+
+//        log.info("{}  {} {}", searchString, start_regexp, regexp);
 
         List<SearchResult> resultList = new ArrayList<>();
 
-        for (UserEntity result : userRepository.getSearchRegex(regexp)) {
+        for (UserEntity result : userRepository.getSearchRegex(start_regexp, regexp)) {
             resultList.add(new SearchResult(result.getUsername(), result.getName(), result.getProfilePicture()));
         }
 
