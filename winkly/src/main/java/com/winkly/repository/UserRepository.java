@@ -67,11 +67,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     void updateVerifiedStatusEmail(@Param("email") String email, @Param("verifiedStatus") String verifiedStatus);
 
     @Query(
-            value = "SELECT * FROM user_table WHERE (name REGEXP :regexp)",
+            value = "SELECT * FROM user_table WHERE (name REGEXP :regexp) OR (name REGEXP :start_regexp) " +
+                    "OR (username REGEXP :start_regexp)",
             nativeQuery = true)
     @Modifying
     @Transactional
-    List<UserEntity> getSearchRegex(@Param("regexp") String regexp);
+    List<UserEntity> getSearchRegex(@Param("start_regexp") String start_regexp, @Param("regexp") String regexp);
 
     @Query(
             value = "UPDATE user_table SET profile_picture=:profilePicture WHERE email=:email",
